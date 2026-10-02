@@ -12,6 +12,7 @@ import java.util.List;
  * - 단체 손님은 여러 테이블을 붙여 앉을 수 있다. (예: 4명 → 2인석 2개)
  * - 손님이 언제 나갈지 알 수 없으므로, 예약이 잡히면 근무자가 직접
  *   "공석 처리"할 때까지 그 테이블은 계속 사용중(ACTIVE)으로 잡아 둔다.
+ * - 단, 시간 제한 코스는 끝나는 시각이 정해져 있으므로 그 뒤 시간대에는 같은 테이블을 배정할 수 있다.
  */
 @Entity
 public class Reservation {
@@ -85,8 +86,27 @@ public class Reservation {
     /** 코스 시간이 다 되었으면 자동 공석 처리 대상인지 — 스케줄러가 주기적으로 확인한다 */
     public boolean isDueForAutoRelease(LocalDateTime now) {
         if (status != Status.ACTIVE || courseDurationMinutes == null) return false;
-        LocalDateTime end = LocalDateTime.of(reserveDate, LocalTime.parse(timeSlot)).plusMinutes(courseDurationMinutes);
-        return !now.isBefore(end);
+        return !now.isBefore(endTime());
+    }
+
+    public LocalDateTime startTime() {
+        return LocalDateTime.of(reserveDate, LocalTime.parse(timeSlot));
+    }
+
+    /** 코스 시간 제한이 있으면 끝나는 시각, 없으면 null — 언제 나갈지 모르므로 공석 처리 전까지 계속 점유 */
+    public LocalDateTime endTime() {
+        return courseDurationMinutes == null ? null : startTime().plusMinutes(courseDurationMinutes);
+    }
+
+    /**
+     * 이 예약이 [start, end) 시간대와 겹치는지. end가 null이면 끝이 정해지지 않은 예약이다.
+     * 17시 120분 코스(19시 종료)와 20시 예약은 안 겹치므로 같은 테이블에 둘 다 잡을 수 있다.
+     */
+    public boolean overlaps(LocalDateTime start, LocalDateTime end) {
+        LocalDateTime myEnd = endTime();
+        boolean startsBeforeMyEnd = myEnd == null || start.isBefore(myEnd);
+        boolean myStartBeforeEnd = end == null || startTime().isBefore(end);
+        return startsBeforeMyEnd && myStartBeforeEnd;
     }
 
     /** 배정된 테이블들의 총 수용 인원 */

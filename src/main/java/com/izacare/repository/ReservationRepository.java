@@ -9,10 +9,10 @@ import java.util.List;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
 
     /**
-     * 해당 가게·날짜에 그 테이블을 아직 사용중(ACTIVE)인 예약이 있는지.
-     * 시간대와 무관하게, 근무자가 공석 처리하기 전까지는 계속 점유된 것으로 본다.
+     * 해당 가게·날짜에 그 테이블을 쓰는 예약들 — 시간이 겹치는지는 Reservation.overlaps 로 따로 판단한다.
+     * (코스 시간 제한이 있으면 끝나는 시각이 정해지므로, 같은 날이라도 시간이 안 겹치면 배정할 수 있다)
      */
-    boolean existsByStoreIdAndReserveDateAndStatusAndTables_Id(
+    List<Reservation> findByStoreIdAndReserveDateAndStatusAndTables_Id(
             Long storeId, LocalDate date, Reservation.Status status, Long tableId);
 
     List<Reservation> findByStoreIdAndReserveDateOrderByTimeSlotAsc(Long storeId, LocalDate date);

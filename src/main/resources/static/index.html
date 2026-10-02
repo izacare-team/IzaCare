@@ -1685,9 +1685,9 @@ async function viewReservationDetail(id) {
         : html`<span class="badge-free">공석</span>`}</div>
       <div style="text-align:right; margin-top:14px">
         ${r.status === 'ACTIVE'
-          ? html`<button class="ack-btn" onclick="releaseFromDetail(${r.id})">공석 처리</button>` : ''}
-        <button class="act danger" style="padding:6px 16px"
-                onclick="cancelFromDetail(${r.id})">예약취소</button>
+          ? html`<button class="ack-btn" onclick="releaseFromDetail(${r.id})">공석 처리</button>
+                 <button class="act danger" style="padding:6px 16px"
+                         onclick="cancelFromDetail(${r.id})">예약취소</button>` : ''}
       </div>
     </div>
     <p id="rdMsg" class="msg" style="text-align:center"></p>`;
@@ -1751,9 +1751,9 @@ async function loadDayReservations() {
             : html`<span class="badge-free">공석</span>`}</div>
         <div style="margin-top:4px">
           ${r.status === 'ACTIVE'
-            ? html`<button class="ack-btn" onclick="releaseReserve(${r.id})">공석 처리</button>` : ''}
-          <button class="del" style="border:none;background:none;color:var(--red);cursor:pointer;font-family:inherit"
-                  onclick="cancelReserve(${r.id})">예약 취소</button>
+            ? html`<button class="ack-btn" onclick="releaseReserve(${r.id})">공석 처리</button>
+                   <button class="del" style="border:none;background:none;color:var(--red);cursor:pointer;font-family:inherit"
+                           onclick="cancelReserve(${r.id})">예약 취소</button>` : ''}
         </div></li>`).join('');
 }
 
@@ -1778,7 +1778,9 @@ async function viewTables() {
   if (!draft.timeSlot) { go('reserve-new'); return; }
   $view.innerHTML = topbar(`테이블 선택 (${fmtD(draft.date)} ${draft.timeSlot})`, 'reserve-new')
     + html`<div id="tableMapWrap"></div>`;
-  window._tables = await api(`/api/tables?date=${draft.date}&timeSlot=${draft.timeSlot}`);
+  // 코스를 같이 넘겨야 서버가 이 예약이 끝나는 시각을 알고, 그 뒤에 잡힌 예약과 안 겹치는 테이블을 열어 준다
+  window._tables = await api(`/api/tables?date=${draft.date}&timeSlot=${draft.timeSlot}`
+    + (draft.courseName ? `&courseName=${encodeURIComponent(draft.courseName)}` : ''));
   renderTableMap();
 }
 

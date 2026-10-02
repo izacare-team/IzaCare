@@ -466,17 +466,38 @@ public class StoreController {
         return r;
     }
 
-    /** 특정 날짜의 테이블 현황 — 공석 처리 전까지 사용중으로 본다. */
+    /**
+     * 특정 날짜·시간의 테이블 현황 — 새로 받을 예약과 시간이 겹치는 사용중 예약이 있으면 사용중으로 본다.
+     * courseName 을 주면 그 코스의 시간 제한으로 새 예약이 끝나는 시각을 잡는다.
+     */
     @GetMapping("/tables")
     @Transactional(readOnly = true)
     public List<TableResponse> tables(@RequestParam LocalDate date, @RequestParam String timeSlot,
+                                      @RequestParam(required = false) String courseName,
                                       HttpServletRequest request) {
         Long storeId = sid(request);
+        LocalDateTime start = LocalDateTime.of(date, LocalTime.parse(timeSlot));
+        Integer duration = courseDuration(storeId, courseName);
+        LocalDateTime end = duration == null ? null : start.plusMinutes(duration);
         return tableRepository.findByStoreIdAndActiveTrueOrderByTableNumberAsc(storeId).stream()
                 .map(t -> new TableResponse(t.getId(), t.getTableNumber(), t.getCapacity(),
-                        reservationRepository.existsByStoreIdAndReserveDateAndStatusAndTables_Id(
-                                storeId, date, Reservation.Status.ACTIVE, t.getId())))
+                        isTableTaken(storeId, date, t.getId(), start, end)))
                 .toList();
+    }
+
+    /** 코스의 시간 제한(분) — 코스 없이 예약이거나 시간 제한이 없는 코스면 null */
+    private Integer courseDuration(Long storeId, String courseName) {
+        if (courseName == null || courseName.isBlank()) return null;
+        return courseRepository.findByStoreIdAndName(storeId, courseName)
+                .map(Course::getDurationMinutes).orElse(null);
+    }
+
+    /** [start, end) 와 시간이 겹치는 사용중 예약이 이 테이블에 있는지 (end == null 이면 끝이 정해지지 않은 예약) */
+    private boolean isTableTaken(Long storeId, LocalDate date, Long tableId,
+                                 LocalDateTime start, LocalDateTime end) {
+        return reservationRepository.findByStoreIdAndReserveDateAndStatusAndTables_Id(
+                        storeId, date, Reservation.Status.ACTIVE, tableId).stream()
+                .anyMatch(r -> r.overlaps(start, end));
     }
 
     @GetMapping("/reservations")
@@ -523,6 +544,10 @@ public class StoreController {
             throw new IllegalArgumentException("테이블을 1개 이상 선택해 주세요.");
         }
 
+        Integer courseDuration = courseDuration(storeId, req.courseName());
+        LocalDateTime start = LocalDateTime.of(req.reserveDate(), LocalTime.parse(req.timeSlot()));
+        LocalDateTime end = courseDuration == null ? null : start.plusMinutes(courseDuration);
+
         List<DiningTable> tables = new ArrayList<>();
         for (Long tableId : req.tableIds()) {
             DiningTable t = tableRepository.findById(tableId)
@@ -533,10 +558,9 @@ public class StoreController {
             if (!t.isActive()) {   // 화면에는 안 보이지만 id를 직접 넘기면 들어올 수 있다
                 throw new IllegalArgumentException("치운 테이블입니다: " + t.getTableNumber() + "번");
             }
-            if (reservationRepository.existsByStoreIdAndReserveDateAndStatusAndTables_Id(
-                    storeId, req.reserveDate(), Reservation.Status.ACTIVE, tableId)) {
+            if (isTableTaken(storeId, req.reserveDate(), tableId, start, end)) {
                 throw new IllegalStateException(
-                        t.getTableNumber() + "번 테이블은 사용중입니다. 공석 처리 후 다시 배정할 수 있습니다.");
+                        t.getTableNumber() + "번 테이블은 그 시간에 사용중입니다. 공석 처리 후 다시 배정할 수 있습니다.");
             }
             tables.add(t);
         }
@@ -546,10 +570,6 @@ public class StoreController {
             throw new IllegalArgumentException("선택한 테이블 정원이 " + capacity
                     + "명입니다. 테이블을 더 선택해 주세요. (예약 인원 " + req.people() + "명)");
         }
-
-        Integer courseDuration = (req.courseName() == null || req.courseName().isBlank()) ? null
-                : courseRepository.findByStoreIdAndName(storeId, req.courseName())
-                        .map(Course::getDurationMinutes).orElse(null);
 
         Reservation saved = reservationRepository.save(new Reservation(
                 req.reserveDate(), req.timeSlot(), req.people(), tables, req.customerName(),
@@ -568,8 +588,12 @@ public class StoreController {
     }
 
     @DeleteMapping("/reservations/{id}")
-    public void cancelReservation(@PathVariable Long id, HttpServletRequest request) {
+    public void cancelReservation(HttpServletRequest request, @PathVariable Long id){
         Reservation r = getReservation(request, id);
+        // 공석 처리된 예약은 손님이 왔다 간 기록이다 — 취소(삭제)하면 방문 기록이 사라진다
+        if (!r.isActive()) {
+            throw new IllegalStateException("공석 처리된 예약은 취소할 수 없습니다.");
+        }
         reservationRepository.delete(r);
     }
 
