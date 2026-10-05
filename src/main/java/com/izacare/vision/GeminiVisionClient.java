@@ -26,10 +26,13 @@ import java.util.Map;
 @ConditionalOnProperty(name = "vision.provider", havingValue = "gemini")
 public class GeminiVisionClient implements VisionAiClient {
 
-    /** 응답을 기다리는 상한. 실사 화면에서 사용자가 대기하므로 짧게 잡는다. */
-    private static final Duration READ_TIMEOUT = Duration.ofSeconds(15);
+    /**
+     * 응답을 기다리는 상한. 사진 한 장 인식에도 20초 안팎이 걸려서(gemini-3.5-flash 실측)
+     * 15초로 잡았을 때는 정상 응답을 기다리다 끊어 버렸다.
+     */
+    private static final Duration READ_TIMEOUT = Duration.ofSeconds(60);
     private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(5);
-    /** 503 재시도 횟수. 최악 대기 = READ_TIMEOUT × (1 + MAX_RETRY) + RETRY_DELAY = 31초. */
+    /** 503 재시도 횟수. 최악 대기 = READ_TIMEOUT × (1 + MAX_RETRY) + RETRY_DELAY = 121초. */
     private static final int MAX_RETRY = 1;
     private static final Duration RETRY_DELAY = Duration.ofSeconds(1);
 
