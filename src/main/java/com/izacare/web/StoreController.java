@@ -165,6 +165,8 @@ public class StoreController {
     @PostMapping("/notices/{id}/ack")
     public NoticeResponse ackNotice(@PathVariable Long id, HttpServletRequest request) {
         Member me = loginMember(request);
+        // 공지는 사장님이 올리는 것이라 사장님 확인은 의미가 없고 확인 인원만 부풀린다
+        if (me.isOwner()) throw new IllegalStateException("공지 확인은 직원만 할 수 있습니다.");
         Notice notice = getNotice(request, id);
         if (!noticeAckRepository.existsByNoticeIdAndMemberId(id, me.getId())) {
             noticeAckRepository.save(new NoticeAck(notice, me));

@@ -576,7 +576,8 @@ async function loadNotices() {
         <div id="nhist-${n.id}" hidden></div>
         <div id="nedit-${n.id}" hidden></div>
         <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px">
-          ${n.ackedByMe
+          ${isOwner() ? html`<span></span>`
+            : n.ackedByMe
             ? html`<span class="ack-done">✓ 확인했습니다</span>`
             : html`<button class="ack-btn" onclick="ackNotice(${n.id})">확인했습니다</button>`}
           <span class="hint" style="margin-left:10px; text-align:right">
