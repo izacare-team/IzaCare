@@ -249,6 +249,38 @@ public class StoreController {
         return AttendanceResponse.from(attendance);
     }
 
+    /** 그 영업일의 전 직원 근태 — 사장님이 깜빡한 기록을 찾아 고치는 화면용 */
+    @GetMapping("/attendance")
+    @Transactional(readOnly = true)
+    public List<AttendanceResponse> attendanceByDate(@RequestParam LocalDate date, HttpServletRequest request) {
+        Member me = loginMember(request);
+        if (!me.isOwner()) throw new IllegalStateException("사장님만 조회할 수 있습니다.");
+        return attendanceRepository.findByStoreIdAndWorkDate(me.getStoreId(), date)
+                .stream().map(AttendanceResponse::from).toList();
+    }
+
+    public record AttendanceCorrectRequest(LocalTime clockIn, LocalTime breakAt,
+                                           LocalTime breakEnd, LocalTime clockOut) {}
+
+    /**
+     * 퇴근을 깜빡한 기록 등을 사장님이 직접 고친다 — clock()의 mark()와 달리 순서 제약 없이
+     * 네 시각을 한 번에 다시 쓴다. 값을 비우면 그 항목은 지워진다.
+     */
+    @PatchMapping("/attendance/{id}")
+    public AttendanceResponse correctAttendance(@PathVariable Long id,
+                                                @RequestBody AttendanceCorrectRequest req,
+                                                HttpServletRequest request) {
+        Member me = loginMember(request);
+        if (!me.isOwner()) throw new IllegalStateException("사장님만 수정할 수 있습니다.");
+        Attendance attendance = attendanceRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("근태 기록을 찾을 수 없습니다: " + id));
+        if (!attendance.getStoreId().equals(me.getStoreId())) {
+            throw new IllegalArgumentException("근태 기록을 찾을 수 없습니다: " + id);
+        }
+        attendance.correct(req.clockIn(), req.breakAt(), req.breakEnd(), req.clockOut());
+        return AttendanceResponse.from(attendance);
+    }
+
     /**
      * 출근 위치 확인 — GPS 반경과 매장 Wi-Fi IP 중 하나라도 통과하면 정상으로 본다.
      * 실내에서는 GPS가 안 잡히고 LTE로 접속하면 IP가 안 맞으므로 서로의 빈틈을 메운다.

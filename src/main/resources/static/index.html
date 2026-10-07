@@ -180,7 +180,7 @@ function viewLogin() {
   $view.innerHTML = html`
     <div style="display:flex; justify-content:flex-end">${themeButtonHtml()}</div>
     <div style="margin-top:44px; text-align:center">
-      <h1 style="font-size:2rem">🍶 이자카야<br>매장관리</h1>
+      <h1 style="font-size:2rem">🍢 이자카야<br>매장관리</h1>
     </div>
     <div class="sketch" style="padding:20px; margin-top:20px">
       <label class="field"><span>아이디</span><input id="lgId" autocomplete="username"></label>
@@ -197,7 +197,7 @@ function viewLogin() {
         <a href="#signup" style="color:var(--blue); font-weight:700">회원가입</a></p>
     </div>
     <p class="hint" style="text-align:center; margin-top:14px">
-      데모 — 사장님 boss/1234 · 알바생 staff/1234 (가입 시 가게코드 <b>DEMO01</b>)</p>`;
+      가입 시 가게코드 <b>DEMO01</b></p>`;
   document.getElementById('lgPw').addEventListener('keydown',
     e => { if (e.key === 'Enter') doLogin(); });
 }
@@ -376,13 +376,32 @@ async function refreshAlerts() {
   try {
     const alerts = await api('/api/alerts');
     window._alerts = alerts;
-    const badge = document.getElementById('alertBadge');
-    if (badge) {
-      badge.textContent = alerts.length;
-      badge.style.display = alerts.length > 0 ? 'inline-flex' : 'none';
-      badge.closest('.bell')?.classList.toggle('has-unread', alerts.length > 0);
-    }
+    updateAlertBadge(alerts);
   } catch (e) { console.warn('알림 조회 실패:', e.message); }
+}
+
+/*
+ * 종 숫자 자동 갱신 — 홈을 열 때 한 번만 불러오면, 홈에 머무는 동안 들어온 새 알림이 안 보인다.
+ * 종이 화면에 있고(홈) 탭이 보일 때만 조회하고, 탭으로 돌아오면 바로 한 번 갱신한다.
+ */
+setInterval(() => {
+  if (document.getElementById('alertBadge') && !document.hidden) refreshAlerts();
+}, 20000);
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && document.getElementById('alertBadge')) refreshAlerts();
+});
+
+/**
+ * 종 숫자 = 읽지 않은 이벤트 알림만. 재고 부족(id 없음)은 읽음 개념이 없어서
+ * 세면 종을 눌러도 숫자가 안 줄어든다 — 목록에는 계속 보이고, 개수는 홈의 "재고 부족"에 있다.
+ */
+function updateAlertBadge(alerts) {
+  const badge = document.getElementById('alertBadge');
+  if (!badge) return;
+  const unread = alerts.filter(a => a.id !== null).length;
+  badge.textContent = unread;
+  badge.style.display = unread > 0 ? 'inline-flex' : 'none';
+  badge.closest('.bell')?.classList.toggle('has-unread', unread > 0);
 }
 
 /** 알림·대시보드 상세 줄을 눌렀을 때 — 펼쳐진 패널을 닫고 해당 화면으로 이동 */
@@ -428,12 +447,7 @@ async function toggleAlertPanel() {
         </${a.route ? 'button' : 'div'}>`;
       }).join('');
 
-  const badge = document.getElementById('alertBadge');
-  if (badge) {
-    badge.textContent = alerts.length;
-    badge.style.display = alerts.length > 0 ? 'inline-flex' : 'none';
-    badge.closest('.bell')?.classList.toggle('has-unread', alerts.length > 0);
-  }
+  updateAlertBadge(alerts);
 
   // 이벤트 알림(예약·스케줄)은 확인했으므로 읽음 처리 — 재고 부족은 재고가 채워져야 사라짐
   if (alerts.some(a => a.id !== null)) {
@@ -1055,8 +1069,56 @@ async function viewAttendance() {
   $view.innerHTML = topbar('출근', 'home') + html`
     <p class="page-sub" id="atDay">${me.displayName}님의 근태</p>
     <div class="clock-list" id="clockList">불러오는 중...</div>
-    <p id="atMsg" class="msg" style="text-align:center"></p>`;
+    <p id="atMsg" class="msg" style="text-align:center"></p>`
+    + (isOwner() ? html`
+    <div class="sketch2" style="padding:14px; margin-top:20px">
+      <h3 style="margin:0 0 8px">직원 근태 수정</h3>
+      <p class="hint" style="margin-top:0">퇴근을 깜빡한 기록처럼, 직원이 더는 스스로 고칠 수 없는
+        지난 근태를 사장님이 직접 바로잡습니다. 비워 두면 그 항목은 지워집니다.</p>
+      <label class="field"><span>날짜</span>
+        <input id="atFixDate" type="date" value="${today()}" onchange="loadAttendanceFix()"></label>
+      <div id="atFixList">불러오는 중...</div>
+    </div>` : '');
   loadAttendance();
+  if (isOwner()) loadAttendanceFix();
+}
+
+/** 사장님용 — 날짜를 골라 그날 전 직원의 근태를 보고 시각을 고친다 */
+async function loadAttendanceFix() {
+  const date = document.getElementById('atFixDate').value;
+  const box = document.getElementById('atFixList');
+  box.innerHTML = '불러오는 중...';
+  try {
+    const list = await api('/api/attendance?date=' + date);
+    const FIELD = { clockIn: '출근', breakAt: '휴게 시작', breakEnd: '휴게 종료', clockOut: '퇴근' };
+    box.innerHTML = list.length === 0
+      ? '<p class="hint">그 날 근태 기록이 없습니다</p>'
+      : list.map(a => html`
+        <div class="audit-row sketch2" style="flex-direction:column; align-items:stretch; gap:8px; margin-top:10px">
+          <strong>${a.staffName}</strong>
+          <div style="display:flex; gap:10px; flex-wrap:wrap">
+            ${Object.entries(FIELD).map(([k, label]) => html`
+              <label style="font-size:0.85rem; display:flex; flex-direction:column; gap:2px">${label}
+                <input type="time" id="fix-${a.id}-${k}" value="${a[k] ? a[k].slice(0, 5) : ''}"></label>`).join('')}
+          </div>
+          <button class="act" style="align-self:flex-end; padding:5px 12px; font-size:0.9rem"
+                  onclick="saveAttendanceFix(${a.id})">저장</button>
+          <p id="atFixMsg-${a.id}" class="msg" style="margin:0"></p>
+        </div>`).join('');
+  } catch (e) { box.innerHTML = html`<p class="msg error">${e.message}</p>`; }
+}
+async function saveAttendanceFix(id) {
+  const get = k => document.getElementById(`fix-${id}-${k}`).value || null;
+  try {
+    await api(`/api/attendance/${id}`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        clockIn: get('clockIn'), breakAt: get('breakAt'),
+        breakEnd: get('breakEnd'), clockOut: get('clockOut')
+      })
+    });
+    showMsg(`atFixMsg-${id}`, '저장했습니다.', true);
+  } catch (e) { showMsg(`atFixMsg-${id}`, e.message, false); }
 }
 async function loadAttendance() {
   const a = await api('/api/attendance/today');

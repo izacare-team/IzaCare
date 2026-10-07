@@ -92,6 +92,29 @@ public class Attendance {
         }
     }
 
+    /**
+     * 사장님이 깜빡한 기록을 손으로 고친다. mark()의 순서 제약과 달리 네 값을 통째로 다시 쓴다 —
+     * "다음 단계로 진행"이 아니라 "원래 몇 시였는지"를 입력하는 것이라 이미 지나간 일을 자유롭게 바로잡는다.
+     * 그래도 시간 순서(출근 ≤ 휴게시작 ≤ 휴게종료 ≤ 퇴근)는 지켜야 근무시간 계산이 말이 된다.
+     */
+    public void correct(LocalTime clockIn, LocalTime breakAt, LocalTime breakEnd, LocalTime clockOut) {
+        require(breakAt == null || clockIn != null, "휴게 시작이 있으려면 출근 시각도 입력해야 합니다.");
+        require(breakEnd == null || breakAt != null, "휴게 종료가 있으려면 휴게 시작 시각도 입력해야 합니다.");
+        require(clockOut == null || clockIn != null, "퇴근이 있으려면 출근 시각도 입력해야 합니다.");
+        requireOrder(clockIn, breakAt, "출근 시각이 휴게 시작보다 늦을 수 없습니다.");
+        requireOrder(breakAt, breakEnd, "휴게 시작이 휴게 종료보다 늦을 수 없습니다.");
+        requireOrder(breakEnd, clockOut, "휴게 종료가 퇴근보다 늦을 수 없습니다.");
+        requireOrder(clockIn, clockOut, "출근 시각이 퇴근보다 늦을 수 없습니다.");
+        this.clockIn = clockIn;
+        this.breakAt = breakAt;
+        this.breakEnd = breakEnd;
+        this.clockOut = clockOut;
+    }
+
+    private static void requireOrder(LocalTime earlier, LocalTime later, String message) {
+        if (earlier != null && later != null && earlier.isAfter(later)) throw new IllegalStateException(message);
+    }
+
     /** 출근 직후 위치 확인 결과를 남긴다 */
     public void recordClockInLocation(LocationCheck check, Integer distanceMeters) {
         this.clockInLocation = check;
