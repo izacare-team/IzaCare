@@ -31,6 +31,8 @@ vision:
     model: ${GEMINI_MODEL:gemini-3.5-flash}   # 3.7-flash는 혼잡으로 503 빈발
   # 실사 사진 원본 저장 위치 — 나중에 수량 분쟁이 났을 때 근거가 된다
   image-dir: ${VISION_IMAGE_DIR:./data/audit-images}
+  # true면 서버 컴퓨터(localhost)에서 한 실사만 실제 AI, 나머지 기기는 mock — 발표장에서 API 한도 보호
+  local-only: ${VISION_LOCAL_ONLY:false}
 
 server:
   port: 8080

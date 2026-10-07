@@ -6,6 +6,7 @@ import com.izacare.dto.Dtos.OverrideLineRequest;
 import com.izacare.service.AuditService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +29,27 @@ public class AuditController {
     private static final int MAX_IMAGES = 8;
 
     private final AuditService auditService;
+    private final ClientIpResolver ipResolver;
+    /**
+     * true면 이 서버 컴퓨터(localhost)에서 온 실사만 실제 AI를 쓰고, 나머지는 mock 인식.
+     * 발표장에서 청중이 접속해 무료 API 한도(분당·일일)를 소진하는 것을 막는다.
+     */
+    private final boolean realAiLocalOnly;
 
-    public AuditController(AuditService auditService) {
+    public AuditController(AuditService auditService, ClientIpResolver ipResolver,
+                           @Value("${vision.local-only:false}") boolean realAiLocalOnly) {
         this.auditService = auditService;
+        this.ipResolver = ipResolver;
+        this.realAiLocalOnly = realAiLocalOnly;
+    }
+
+    /** 요청이 서버 자신에게서 왔는지 — 원격 주소는 숫자 IP라 DNS 조회 없이 판정된다 */
+    private boolean fromLocalhost(HttpServletRequest request) {
+        try {
+            return InetAddress.getByName(ipResolver.resolve(request)).isLoopbackAddress();
+        } catch (UnknownHostException e) {
+            return false;
+        }
     }
 
     private Long storeId(HttpServletRequest request) {
@@ -50,8 +71,9 @@ public class AuditController {
         if (bytes.size() > MAX_IMAGES) {
             throw new IllegalArgumentException("사진은 한 번에 " + MAX_IMAGES + "장까지 올릴 수 있습니다.");
         }
+        boolean useRealAi = !realAiLocalOnly || fromLocalhost(request);
         return auditService.createAuditFromImages(storeId(request), bytes,
-                images.get(0).getContentType());
+                images.get(0).getContentType(), useRealAi);
     }
 
     /** 실사에 쓰인 사진 원본 (수량 조정 근거 확인용) */

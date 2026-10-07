@@ -8,6 +8,7 @@ import com.izacare.dto.Dtos.AuditResponse;
 import com.izacare.repository.FoodItemRepository;
 import com.izacare.repository.StockAuditRepository;
 import com.izacare.repository.StockTransactionRepository;
+import com.izacare.vision.MockVisionClient;
 import com.izacare.vision.RecognizedItem;
 import com.izacare.vision.VisionAiClient;
 import com.izacare.vision.VisionResult;
@@ -36,6 +37,7 @@ import java.util.UUID;
 public class AuditService {
 
     private final VisionAiClient visionAiClient;
+    private final VisionAiClient mockVisionClient = new MockVisionClient();
     private final FoodItemRepository itemRepository;
     private final StockAuditRepository auditRepository;
     private final StockTransactionRepository transactionRepository;
@@ -58,10 +60,17 @@ public class AuditService {
 
     /** 1단계: 사진(냉장고·주류고·창고 등 여러 장) → AI 인식 → DRAFT 실사 생성 */
     public AuditResponse createAuditFromImages(Long storeId, List<byte[]> images, String contentType) {
+        return createAuditFromImages(storeId, images, contentType, true);
+    }
+
+    /** useRealAi=false 면 설정과 무관하게 mock 인식 — 실제 AI 호출 한도를 아낄 때 */
+    public AuditResponse createAuditFromImages(Long storeId, List<byte[]> images, String contentType,
+                                               boolean useRealAi) {
         List<FoodItem> allItems = itemRepository.findByStoreId(storeId);
         List<String> knownNames = allItems.stream().map(FoodItem::getName).toList();
 
-        VisionResult result = visionAiClient.recognize(images, contentType, knownNames);
+        VisionAiClient client = useRealAi ? visionAiClient : mockVisionClient;
+        VisionResult result = client.recognize(images, contentType, knownNames);
 
         StockAudit audit = new StockAudit(storeId, "AI_VISION", result.rawResponse());
 
