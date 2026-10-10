@@ -1,4 +1,4 @@
-package com.izacare.domain;
+package com.izacare.reservation;
 
 import org.junit.jupiter.api.Test;
 

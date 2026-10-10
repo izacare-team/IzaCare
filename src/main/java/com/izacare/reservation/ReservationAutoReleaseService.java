@@ -1,7 +1,5 @@
-package com.izacare.service;
+package com.izacare.reservation;
 
-import com.izacare.domain.Reservation;
-import com.izacare.repository.ReservationRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

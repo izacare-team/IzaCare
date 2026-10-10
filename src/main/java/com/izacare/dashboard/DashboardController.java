@@ -7,7 +7,7 @@ import com.izacare.member.Member;
 import com.izacare.notification.AlertController;
 import com.izacare.notification.NotificationRepository;
 import com.izacare.repository.FoodItemRepository;
-import com.izacare.repository.ReservationRepository;
+import com.izacare.reservation.ReservationRepository;
 import com.izacare.store.StoreRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.transaction.annotation.Transactional;

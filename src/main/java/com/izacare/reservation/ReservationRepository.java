@@ -1,6 +1,5 @@
-package com.izacare.repository;
+package com.izacare.reservation;
 
-import com.izacare.domain.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;

@@ -133,30 +133,3 @@ async function regenCode() {
   try { await postJson('/api/store/regenerate-code', {}); loadSettings(); }
   catch (e) { showMsg('stMsg2', e.message, false); }
 }
-async function addTable() {
-  try {
-    await postJson('/api/store/tables', {
-      number: Number(document.getElementById('tbNum').value),
-      capacity: Number(document.getElementById('tbCap').value)
-    });
-    loadSettings();
-  } catch (e) { showMsg('stMsg2', e.message, false); }
-}
-async function delTable(id) {
-  try { await api('/api/store/tables/' + id, { method: 'DELETE' }); loadSettings(); }
-  catch (e) { showMsg('stMsg2', e.message, false); }
-}
-async function addCourse() {
-  try {
-    const name = document.getElementById('crsName').value.trim();
-    if (!name) return;
-    const durationMinutes = Number(document.getElementById('crsDuration').value) || null;
-    const unlimitedRefill = document.getElementById('crsRefill').value === 'true';
-    await postJson('/api/store/courses', { name, durationMinutes, unlimitedRefill });
-    loadSettings();
-  } catch (e) { showMsg('stMsg2', e.message, false); }
-}
-async function delCourse(id) {
-  try { await api('/api/store/courses/' + id, { method: 'DELETE' }); loadSettings(); }
-  catch (e) { showMsg('stMsg2', e.message, false); }
-}

@@ -1,6 +1,5 @@
-package com.izacare.repository;
+package com.izacare.reservation;
 
-import com.izacare.domain.DiningTable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

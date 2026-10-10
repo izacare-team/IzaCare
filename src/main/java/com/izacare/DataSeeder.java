@@ -1,15 +1,15 @@
 package com.izacare;
 
-import com.izacare.domain.Course;
-import com.izacare.domain.DiningTable;
 import com.izacare.domain.FoodItem;
 import com.izacare.member.Member;
 import com.izacare.member.MemberRepository;
 import com.izacare.notice.Notice;
 import com.izacare.notice.NoticeRepository;
-import com.izacare.repository.CourseRepository;
-import com.izacare.repository.DiningTableRepository;
 import com.izacare.repository.FoodItemRepository;
+import com.izacare.reservation.Course;
+import com.izacare.reservation.CourseRepository;
+import com.izacare.reservation.DiningTable;
+import com.izacare.reservation.DiningTableRepository;
 import com.izacare.store.Store;
 import com.izacare.store.StoreRepository;
 import org.springframework.boot.CommandLineRunner;

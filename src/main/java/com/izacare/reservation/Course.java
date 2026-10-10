@@ -1,4 +1,4 @@
-package com.izacare.domain;
+package com.izacare.reservation;
 
 import jakarta.persistence.*;
 

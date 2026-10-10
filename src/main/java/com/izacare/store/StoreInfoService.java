@@ -1,8 +1,8 @@
 package com.izacare.store;
 
 import com.izacare.member.Member;
-import com.izacare.repository.CourseRepository;
-import com.izacare.repository.DiningTableRepository;
+import com.izacare.reservation.CourseRepository;
+import com.izacare.reservation.DiningTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
