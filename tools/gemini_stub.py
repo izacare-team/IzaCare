@@ -4,7 +4,7 @@
   retry      첫 요청 503, 두 번째부터 200  → 재시도가 있으면 최종 성공
   always503  항상 503                      → 2회 시도 후 실패
   fail4xx    항상 400                      → 재시도 없이 1회로 실패
-  hang       응답 안 줌                    → 읽기 타임아웃(15초)이 걸려야 함
+  hang       응답 안 줌                    → 읽기 타임아웃(60초)이 걸려야 함
 
 요청 횟수는 GET /_stats 로 확인한다.
 """
@@ -73,7 +73,7 @@ class Handler(BaseHTTPRequestHandler):
         elif mode == "fail4xx":
             self._send(400, ERR400)
         elif mode == "hang":
-            time.sleep(60)
+            time.sleep(90)   # 앱의 읽기 타임아웃(60초)보다 길게
         else:
             self._send(200, GEMINI_OK)
 

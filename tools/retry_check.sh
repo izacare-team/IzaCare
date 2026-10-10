@@ -22,7 +22,7 @@ run() {
   curl -s -o /dev/null "$STUB/_mode?m=$mode"
   local t0 code t1 elapsed calls
   t0=$(date +%s%3N)
-  code=$(curl -s -o /tmp/scanout -w '%{http_code}' -b "$J" -X POST "$APP/api/audits/scan" -F "image=@$IMG")
+  code=$(curl -s -o /tmp/scanout -w '%{http_code}' -b "$J" -X POST "$APP/api/audits/scan" -F "images=@$IMG")
   t1=$(date +%s%3N)
   elapsed=$(( t1 - t0 ))
   calls=$(curl -s "$STUB/_stats" | python -c 'import sys,json;print(json.load(sys.stdin)["count"])')
@@ -33,6 +33,6 @@ echo "=== 시나리오별 결과 ==="
 run retry     "201 / 2회 — 재시도로 성공"
 run fail4xx   "실패 / 1회 — 4xx는 재시도 안 함"
 run always503 "실패 / 2회 — 1회 재시도 후 포기"
-run hang      "실패 / 1회 — 15초 읽기 타임아웃"
+run hang      "실패 / 1회 — 60초 읽기 타임아웃 (약 60초 소요)"
 
 rm -f "$J" "$IMG"

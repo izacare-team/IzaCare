@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 무차별 대입(brute force) 방지 — (가게코드+아이디+IP) 기준으로
- * 10분 내 5회 로그인 실패하면 10분 동안 잠근다. 성공하면 카운트 초기화.
+ * 무차별 대입(brute force) 방지 — (아이디+접속 IP) 기준으로
+ * 첫 실패로부터 10분 안에 5회 실패하면, 첫 실패 후 10분이 지날 때까지 잠근다. 성공하면 카운트 초기화.
  */
 @Component
 public class LoginGuard {
