@@ -32,6 +32,7 @@
   padding: 18px 16px; text-align: left;
   background: var(--paper); font-weight: 600; cursor: default;
 }
+
 /* 카드 상단의 원형 아이콘 자리 */
 .stock-card::before {
   content: ""; display: block;
@@ -40,6 +41,7 @@
 }
 .stock-card .nm { display: block; font-size: 15px; font-weight: 600; color: var(--ink); }
 .stock-card .qt { display: block; font-size: 19px; font-weight: 800; margin-top: 6px; }
+
 /* 수량 옆의 상태 점 */
 .stock-card .qt::after {
   content: ""; display: inline-block;
@@ -52,6 +54,7 @@
 .stock-card.orange         { border-color: var(--orange); }
 .stock-card.orange::before { background: var(--orange-bg); }
 .stock-card.orange .qt     { color: var(--orange); }
+
 /* blue = 재고 충분 → Figma 기준 초록 계열로 표시 */
 .stock-card.blue           { border-color: var(--green); }
 .stock-card.blue::before   { background: var(--green-bg); }
@@ -76,13 +79,3 @@ input.num {
   -moz-appearance: textfield;
 }
 .center-name { text-align: center; font-size: 19px; font-weight: 800; margin: 18px 0 4px; }
-
-/* ===================== 실사 ===================== */
-.audit-row {
-  display: flex; align-items: center; gap: 10px;
-  padding: 14px; margin-bottom: 10px;
-}
-.audit-row .nm { flex: 1; font-weight: 600; font-size: 15px; }
-.audit-row .cols { text-align: center; font-size: 11px; line-height: 1.3; color: var(--sub); }
-.audit-row .cols b { font-size: 16px; font-weight: 800; color: var(--ink); display: block; }
-.audit-row input { width: 58px; text-align: center; padding: 6px 4px; font-weight: 700; }

@@ -1,6 +1,7 @@
-package com.izacare.domain;
+package com.izacare.inventory;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 /** 재고 변동 이력 (입고 / 폐기 / 실사 조정) */

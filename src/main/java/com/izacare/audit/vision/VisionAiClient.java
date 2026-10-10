@@ -1,4 +1,4 @@
-package com.izacare.vision;
+package com.izacare.audit.vision;
 
 import java.util.List;
 

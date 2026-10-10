@@ -1,9 +1,9 @@
 package com.izacare.notification;
 
 import com.izacare.common.web.AccessDeniedException;
-import com.izacare.domain.FoodItem;
+import com.izacare.inventory.FoodItem;
+import com.izacare.inventory.FoodItemRepository;
 import com.izacare.member.Member;
-import com.izacare.repository.FoodItemRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;

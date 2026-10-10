@@ -2,11 +2,11 @@ package com.izacare.dashboard;
 
 import com.izacare.attendance.AttendanceRepository;
 import com.izacare.common.web.AccessDeniedException;
-import com.izacare.domain.FoodItem;
+import com.izacare.inventory.FoodItem;
+import com.izacare.inventory.FoodItemRepository;
 import com.izacare.member.Member;
 import com.izacare.notification.AlertController;
 import com.izacare.notification.NotificationRepository;
-import com.izacare.repository.FoodItemRepository;
 import com.izacare.reservation.ReservationRepository;
 import com.izacare.store.StoreRepository;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,17 +1,13 @@
-package com.izacare.service;
+package com.izacare.audit;
 
-import com.izacare.domain.AuditLine;
-import com.izacare.domain.FoodItem;
-import com.izacare.domain.StockAudit;
-import com.izacare.domain.StockTransaction;
-import com.izacare.dto.Dtos.AuditResponse;
-import com.izacare.repository.FoodItemRepository;
-import com.izacare.repository.StockAuditRepository;
-import com.izacare.repository.StockTransactionRepository;
-import com.izacare.vision.MockVisionClient;
-import com.izacare.vision.RecognizedItem;
-import com.izacare.vision.VisionAiClient;
-import com.izacare.vision.VisionResult;
+import com.izacare.audit.vision.MockVisionClient;
+import com.izacare.audit.vision.RecognizedItem;
+import com.izacare.audit.vision.VisionAiClient;
+import com.izacare.audit.vision.VisionResult;
+import com.izacare.inventory.FoodItem;
+import com.izacare.inventory.FoodItemRepository;
+import com.izacare.inventory.StockTransaction;
+import com.izacare.inventory.StockTransactionRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

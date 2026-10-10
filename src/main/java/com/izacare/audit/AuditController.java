@@ -1,10 +1,7 @@
-package com.izacare.web;
+package com.izacare.audit;
 
 import com.izacare.common.web.ClientIpResolver;
-import com.izacare.dto.Dtos.AuditResponse;
-import com.izacare.dto.Dtos.OverrideLineRequest;
 import com.izacare.member.Member;
-import com.izacare.service.AuditService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
