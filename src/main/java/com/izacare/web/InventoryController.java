@@ -1,10 +1,10 @@
 package com.izacare.web;
 
-import com.izacare.domain.Notification;
 import com.izacare.dto.Dtos.*;
 import com.izacare.member.Member;
+import com.izacare.notification.Notification;
+import com.izacare.notification.NotificationService;
 import com.izacare.service.InventoryService;
-import com.izacare.service.NotificationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

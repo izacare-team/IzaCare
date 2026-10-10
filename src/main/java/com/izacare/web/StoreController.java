@@ -10,11 +10,12 @@ import com.izacare.domain.DiningTable;
 import com.izacare.domain.Notice;
 import com.izacare.domain.NoticeAck;
 import com.izacare.domain.NoticeHistory;
-import com.izacare.domain.Notification;
 import com.izacare.domain.ReportComment;
 import com.izacare.domain.ReportHistory;
 import com.izacare.domain.Reservation;
 import com.izacare.member.Member;
+import com.izacare.notification.Notification;
+import com.izacare.notification.NotificationService;
 import com.izacare.repository.AttendanceRepository;
 import com.izacare.repository.CommentHistoryRepository;
 import com.izacare.repository.CourseRepository;
@@ -26,7 +27,6 @@ import com.izacare.repository.NoticeRepository;
 import com.izacare.repository.ReportCommentRepository;
 import com.izacare.repository.ReportHistoryRepository;
 import com.izacare.repository.ReservationRepository;
-import com.izacare.service.NotificationService;
 import com.izacare.store.Store;
 import com.izacare.store.StoreRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -219,7 +219,7 @@ public class StoreController {
     }
 
     /** 근태 화면과 대시보드가 같은 문구를 쓰도록 한곳에서 만든다 */
-    static String locationLabel(Attendance a) {
+    public static String locationLabel(Attendance a) {
         if (a.getClockInLocation() == null) return null;
         return switch (a.getClockInLocation()) {
             case GPS_OK -> "매장에서 출근"

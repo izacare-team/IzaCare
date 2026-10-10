@@ -1,7 +1,7 @@
 package com.izacare.member;
 
-import com.izacare.domain.Notification;
-import com.izacare.service.NotificationService;
+import com.izacare.notification.Notification;
+import com.izacare.notification.NotificationService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;

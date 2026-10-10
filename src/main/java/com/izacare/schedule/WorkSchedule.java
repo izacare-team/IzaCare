@@ -1,4 +1,4 @@
-package com.izacare.domain;
+package com.izacare.schedule;
 
 import com.izacare.member.Member;
 import jakarta.persistence.*;

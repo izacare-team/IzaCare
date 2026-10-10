@@ -1,13 +1,15 @@
-package com.izacare.web;
+package com.izacare.dashboard;
 
 import com.izacare.common.web.AccessDeniedException;
 import com.izacare.domain.FoodItem;
 import com.izacare.member.Member;
+import com.izacare.notification.AlertController;
+import com.izacare.notification.NotificationRepository;
 import com.izacare.repository.AttendanceRepository;
 import com.izacare.repository.FoodItemRepository;
-import com.izacare.repository.NotificationRepository;
 import com.izacare.repository.ReservationRepository;
 import com.izacare.store.StoreRepository;
+import com.izacare.web.StoreController;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;

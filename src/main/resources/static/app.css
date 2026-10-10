@@ -17,148 +17,11 @@
 @keyframes toastFade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes toastPop  { from { transform: scale(.85); opacity: .4; } to { transform: none; opacity: 1; } }
 
-/* 근무 등록 — 선택한 여러 날짜를 칩으로 보여준다 */
-.date-chip {
-  display: inline-flex; align-items: center; gap: 4px;
-  background: var(--blue-bg); color: var(--blue);
-  border-radius: var(--r-pill); padding: 4px 6px 4px 12px;
-  font-size: 13px; font-weight: 600;
-}
-.date-chip button {
-  border: none; background: none; color: var(--blue);
-  cursor: pointer; font-size: 16px; line-height: 1;
-  font-family: inherit; padding: 0 2px;
-}
-
-/* 근무 등록 폼 안 미니달력 — 드래그로 여러 날 선택 */
-.sc-cal-head {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 2px 4px 8px;
-}
-.sc-cal-head b { font-size: 14px; font-weight: 800; }
-.sc-cal-head button {
-  background: none; border: none; font-size: 16px; cursor: pointer;
-  color: var(--sub); font-family: inherit; padding: 4px 12px;
-}
-.sc-cal-grid {
-  display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px;
-  touch-action: none; user-select: none;   /* 드래그 중 스크롤·글자선택 방지 */
-}
-.sc-cal-dow {
-  text-align: center; font-size: 11px; font-weight: 700;
-  color: var(--sub); padding: 2px 0;
-}
-.sc-cal-day {
-  aspect-ratio: 1 / 1;
-  display: flex; align-items: center; justify-content: center;
-  border: 1px solid var(--line); border-radius: var(--r-sm);
-  background: var(--paper); color: var(--ink);
-  font-size: 13px; font-weight: 600; cursor: pointer;
-}
-.sc-cal-day.sun { color: var(--red); }
-.sc-cal-day.sat { color: var(--blue); }
-.sc-cal-day.today:not(.sel) { box-shadow: inset 0 0 0 2px var(--blue); }
-.sc-cal-day.sel {
-  background: var(--blue); border-color: var(--blue); color: var(--on-accent);
-}
-.sc-cal-day.blank { border: none; background: none; cursor: default; }
-
-.msg { min-height: 1.3em; margin: 10px 2px; font-weight: 600; font-size: 14px; }
-.msg.ok { color: var(--green); }
-.msg.error { color: var(--red); }
-.hint { color: var(--sub); font-size: 13px; }
-
-.del {
-  cursor: pointer; color: var(--red);
-  border: none; background: none;
-  font-family: inherit; font-size: 13px; font-weight: 600;
-}
-
-/* ===================== 홈 화면 ===================== */
-.home-grid { display: flex; gap: 12px; }
-.notice-box { flex: 1; padding: 16px; }
-.notice-box h2 { margin: 0 0 12px; font-size: 17px; font-weight: 700; }
-.notice-item {
-  border-bottom: 1px solid var(--line);
-  padding: 11px 2px; display: flex; justify-content: space-between; gap: 8px;
-  font-size: 14px;
-}
-.notice-item:last-of-type { border-bottom: none; }
-.notice-item .del { font-size: 13px; }
-
-.side-btns { display: flex; flex-direction: column; gap: 10px; }
-.side-btn {
-  width: 72px; height: 60px;
-  border: 1px solid var(--line); border-radius: var(--r-md);
-  background: var(--paper);
-  font-family: inherit; font-size: 13px; font-weight: 600;
-  cursor: pointer; color: var(--ink);
-  transition: transform .1s;
-}
-.side-btn:active { transform: scale(.96); }
-.side-btn.b-gray   { background: var(--hover); border-color: transparent; }
-.side-btn.b-blue   { background: var(--blue-bg);   border-color: transparent; color: var(--blue); }
-.side-btn.b-red    { background: var(--red-bg);    border-color: transparent; color: var(--red); }
-.side-btn.b-purple { background: var(--purple-bg); border-color: transparent; color: var(--purple); }
-.side-btn.b-green  { background: var(--green-bg);  border-color: transparent; color: var(--green); }
-
 /* 공지 입력 — 크기 고정 (사용자가 늘릴 수 없음) */
 .notice-input {
   resize: none; height: 78px; line-height: 1.45;
 }
 
-/* ===================== 홈 대시보드 요약 ===================== */
-.dash-card {
-  display: flex; gap: 4px; padding: 10px 8px; margin-bottom: 12px;
-}
-.dash-stat {
-  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
-  padding: 10px 2px;
-  background: none; border: none; border-radius: var(--r-md);
-  font-family: inherit; cursor: pointer;
-  transition: background .15s;
-}
-.dash-stat:hover  { background: var(--hover); }
-.dash-stat.on     { background: var(--hover); }
-.dash-stat .num   { font-size: 24px; font-weight: 800; line-height: 1.1; }
-.dash-stat .label { font-size: 12px; color: var(--sub); white-space: nowrap; }
-.dash-stat.purple .num { color: var(--purple); }
-.dash-stat.green  .num { color: var(--green); }
-.dash-stat.red    .num { color: var(--red); }
-.dash-stat.blue   .num { color: var(--blue); }
-
-/* 숫자를 눌렀을 때 펼쳐지는 상세 */
-.dash-detail { padding: 14px 16px; margin-bottom: 14px; }
-.dash-detail-head {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 15px; font-weight: 700;
-  padding-bottom: 10px; border-bottom: 1px solid var(--line);
-}
-.dash-detail-head .count {
-  background: var(--hover); color: var(--sub);
-  font-size: 12px; font-weight: 700;
-  padding: 1px 9px; border-radius: var(--r-pill);
-}
-.dash-detail-list { list-style: none; margin: 0; padding: 0; }
-.dash-detail-list li {
-  padding: 11px 2px; border-bottom: 1px solid var(--line); font-size: 14px;
-}
-.dash-detail-list li:last-child { border-bottom: none; }
-/* 이동할 화면이 있는 줄 — 눌러서 바로 갈 수 있다 */
-.dash-detail-list li:has(.detail-link) { padding: 0; }
-.detail-link {
-  width: 100%; display: flex; align-items: center; gap: 8px;
-  padding: 12px 4px; text-align: left;
-  background: none; border: none; font-family: inherit; font-size: 14px;
-  color: var(--ink); cursor: pointer;
-  transition: background .15s;
-}
-.detail-link:hover  { background: var(--hover); }
-.detail-link:active { background: var(--press); }
-.detail-link .txt { flex: 1; min-width: 0; }
-.detail-link .chev {
-  flex-shrink: 0; color: var(--sub); font-size: 18px; line-height: 1;
-}
 /* ===================== 공지 확인 ===================== */
 .ack-btn {
   font-family: inherit; font-size: 12px; font-weight: 600;
@@ -303,36 +166,6 @@
 .history-box .meta { color: var(--purple-sub); font-size: 11px; }
 .history-box .old { white-space: pre-wrap; text-decoration: line-through; opacity: .7; }
 
-/* ===================== 알림 목록 ===================== */
-.alert-line {
-  padding: 10px 2px; border-bottom: 1px solid var(--line);
-  display: flex; gap: 8px; font-size: 14px;
-}
-.alert-line:last-child { border-bottom: none; }
-/* 이동할 화면이 있는 알림 — 눌러서 바로 갈 수 있다 */
-.alert-line.linked {
-  width: 100%; align-items: center; text-align: left;
-  background: none; border-left: none; border-right: none; border-top: none;
-  font-family: inherit; cursor: pointer;
-  padding: 11px 4px;
-  transition: background .15s;
-}
-.alert-line.linked:hover  { background: var(--hover); }
-.alert-line.linked:active { background: var(--press); }
-.alert-line .ico { flex-shrink: 0; }
-.alert-line .txt { flex: 1; min-width: 0; }
-.alert-line .chev {
-  flex-shrink: 0; color: var(--sub); font-size: 18px; line-height: 1; margin-left: 2px;
-}
-.alert-line.low    { color: var(--red); }
-.alert-line.resv   { color: var(--purple); }
-.alert-line.sched  { color: var(--blue); }
-.alert-line.member { color: var(--green); }
-.alert-line.notice { color: var(--gold); }
-.alert-line .when {
-  color: var(--sub); font-size: 11px; margin-left: auto; white-space: nowrap;
-}
-
 /* ===================== 액션 시트 ===================== */
 .sheet-backdrop {
   position: fixed; inset: 0; background: var(--backdrop);
@@ -457,53 +290,6 @@ input.num {
 .clock-btn:not(.done):disabled { opacity: .45; }
 .clock-btn:not(.done):disabled:active { background: var(--paper); }
 .clock-btn.done:disabled { opacity: 1; }
-
-/* ===================== 달력 ===================== */
-.cal-head {
-  display: flex; align-items: center; justify-content: center;
-  gap: 18px; margin-bottom: 12px;
-}
-.cal-head h2 { margin: 0; font-size: 17px; font-weight: 800; }
-.cal-head button {
-  background: none; border: none; font-size: 18px;
-  cursor: pointer; font-family: inherit; color: var(--sub);
-}
-.cal-grid {
-  display: grid; grid-template-columns: repeat(7, 1fr);
-  gap: 2px; text-align: center;
-  border: 1px solid var(--line); border-radius: var(--r-md);
-  padding: 8px 6px;
-}
-.cal-grid .dow { font-weight: 700; padding: 6px 0; font-size: 12px; color: var(--sub); }
-.cal-cell {
-  padding: 4px 0 9px; font-size: 14px; cursor: pointer;
-  position: relative; font-weight: 600;
-  background: none; border: none; font-family: inherit; color: var(--ink);
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
-}
-/* 날짜 숫자를 감싸는 정원 — 칸 자체는 가로가 더 넓어서 원이 찌그러진다 */
-.cal-cell .d {
-  width: 32px; height: 32px; border-radius: 50%;
-  display: inline-flex; align-items: center; justify-content: center;
-  line-height: 1;
-}
-.cal-cell.sun { color: var(--red); }
-.cal-cell.sat { color: var(--blue); }
-/* 오늘 = 채운 원 / 선택한 날 = 테두리 원 (둘 다면 채운 원 위에 테두리) */
-.cal-cell.today .d { background: var(--blue); color: var(--on-accent); font-weight: 800; }
-.cal-cell.sel .d   { box-shadow: inset 0 0 0 2px var(--blue); }
-.cal-cell.sel.today .d { box-shadow: inset 0 0 0 2px var(--ink); }
-.cal-cell .cal-dots {
-  display: flex; gap: 3px; justify-content: center; min-height: 5px;
-}
-.cal-cell .dot {
-  width: 5px; height: 5px; border-radius: 50%; background: var(--purple);
-}
-.cal-cell .dot.notice { background: var(--red); }     /* 전체 공지 */
-.cal-cell .dot.sched  { background: var(--purple); }  /* 내 근무 */
-.cal-cell .dot.resv   { background: var(--yellow); }  /* 예약 */
-.day-events { margin-top: 14px; }
-.day-events li { margin-bottom: 6px; }
 
 /* ===================== 일보 ===================== */
 .report-row {

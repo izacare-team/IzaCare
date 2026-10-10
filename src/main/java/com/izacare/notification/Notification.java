@@ -1,4 +1,4 @@
-package com.izacare.domain;
+package com.izacare.notification;
 
 import com.izacare.member.Member;
 import jakarta.persistence.*;
