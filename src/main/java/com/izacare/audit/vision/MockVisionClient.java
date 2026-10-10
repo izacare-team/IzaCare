@@ -1,4 +1,4 @@
-package com.izacare.vision;
+package com.izacare.audit.vision;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;

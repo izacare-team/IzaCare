@@ -1,5 +1,6 @@
-package com.izacare.domain;
+package com.izacare.audit;
 
+import com.izacare.inventory.FoodItem;
 import jakarta.persistence.*;
 
 /**

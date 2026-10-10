@@ -1,6 +1,5 @@
-package com.izacare.repository;
+package com.izacare.audit;
 
-import com.izacare.domain.StockAudit;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 

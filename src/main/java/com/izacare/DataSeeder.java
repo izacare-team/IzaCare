@@ -1,11 +1,11 @@
 package com.izacare;
 
-import com.izacare.domain.FoodItem;
+import com.izacare.inventory.FoodItem;
+import com.izacare.inventory.FoodItemRepository;
 import com.izacare.member.Member;
 import com.izacare.member.MemberRepository;
 import com.izacare.notice.Notice;
 import com.izacare.notice.NoticeRepository;
-import com.izacare.repository.FoodItemRepository;
 import com.izacare.reservation.Course;
 import com.izacare.reservation.CourseRepository;
 import com.izacare.reservation.DiningTable;

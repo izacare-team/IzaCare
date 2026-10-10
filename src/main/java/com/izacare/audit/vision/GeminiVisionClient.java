@@ -1,4 +1,4 @@
-package com.izacare.vision;
+package com.izacare.audit.vision;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;

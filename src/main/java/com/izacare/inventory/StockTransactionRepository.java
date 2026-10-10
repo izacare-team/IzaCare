@@ -1,6 +1,5 @@
-package com.izacare.repository;
+package com.izacare.inventory;
 
-import com.izacare.domain.StockTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

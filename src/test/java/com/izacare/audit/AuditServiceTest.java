@@ -1,14 +1,11 @@
-package com.izacare.service;
+package com.izacare.audit;
 
-import com.izacare.domain.FoodItem;
-import com.izacare.domain.StockAudit;
-import com.izacare.dto.Dtos.AuditResponse;
-import com.izacare.repository.FoodItemRepository;
-import com.izacare.repository.StockAuditRepository;
-import com.izacare.repository.StockTransactionRepository;
-import com.izacare.vision.RecognizedItem;
-import com.izacare.vision.VisionAiClient;
-import com.izacare.vision.VisionResult;
+import com.izacare.audit.vision.RecognizedItem;
+import com.izacare.audit.vision.VisionAiClient;
+import com.izacare.audit.vision.VisionResult;
+import com.izacare.inventory.FoodItem;
+import com.izacare.inventory.FoodItemRepository;
+import com.izacare.inventory.StockTransactionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 

@@ -1,6 +1,7 @@
-package com.izacare.domain;
+package com.izacare.inventory;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 
 /** 재고 품목 (예: 생맥주, 사케, 닭꼬치용 닭고기 ...) */

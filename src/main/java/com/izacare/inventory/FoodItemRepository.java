@@ -1,6 +1,5 @@
-package com.izacare.repository;
+package com.izacare.inventory;
 
-import com.izacare.domain.FoodItem;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;

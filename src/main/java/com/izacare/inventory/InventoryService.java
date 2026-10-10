@@ -1,10 +1,5 @@
-package com.izacare.service;
+package com.izacare.inventory;
 
-import com.izacare.domain.FoodItem;
-import com.izacare.domain.StockTransaction;
-import com.izacare.dto.Dtos.*;
-import com.izacare.repository.FoodItemRepository;
-import com.izacare.repository.StockTransactionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
