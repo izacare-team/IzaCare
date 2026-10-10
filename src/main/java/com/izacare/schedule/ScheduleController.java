@@ -1,11 +1,9 @@
-package com.izacare.web;
+package com.izacare.schedule;
 
-import com.izacare.domain.Notification;
-import com.izacare.domain.WorkSchedule;
 import com.izacare.member.Member;
 import com.izacare.member.MemberRepository;
-import com.izacare.repository.WorkScheduleRepository;
-import com.izacare.service.NotificationService;
+import com.izacare.notification.Notification;
+import com.izacare.notification.NotificationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

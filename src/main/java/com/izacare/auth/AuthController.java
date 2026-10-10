@@ -1,10 +1,10 @@
 package com.izacare.auth;
 
 import com.izacare.common.web.ClientIpResolver;
-import com.izacare.domain.Notification;
 import com.izacare.member.Member;
 import com.izacare.member.MemberRepository;
-import com.izacare.service.NotificationService;
+import com.izacare.notification.Notification;
+import com.izacare.notification.NotificationService;
 import com.izacare.store.Store;
 import com.izacare.store.StoreCodeGenerator;
 import com.izacare.store.StoreRepository;

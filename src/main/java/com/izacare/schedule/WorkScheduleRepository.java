@@ -1,6 +1,5 @@
-package com.izacare.repository;
+package com.izacare.schedule;
 
-import com.izacare.domain.WorkSchedule;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
