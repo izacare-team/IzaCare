@@ -40,7 +40,7 @@
 | 프레임워크 | Spring Boot 3.3.5 (Web MVC · Data JPA · Validation) |
 | 보안 | spring-security-crypto (BCrypt 해싱만 사용) |
 | 빌드 | Gradle (Groovy DSL) |
-| 프론트 | 순수 HTML + Vanilla JS 단일 페이지(`index.html`) + 공용 `app.css` 디자인 시스템 — 프레임워크·노드 빌드 없음 |
+| 프론트 | 순수 HTML + Vanilla JS 단일 페이지 — `index.html` 뼈대 + 화면별 `js/*.js`, 공용 `css/base.css` 디자인 시스템 + 화면별 `css/*.css` (프레임워크·노드 빌드 없음) |
 | 디자인 | Figma 시안 → 직접 구현 |
 | DB | H2 (파일 모드, `./data/izacare`) |
 | AI | Google Gemini Vision (기본 `gemini-3.5-flash`) / Mock — `VisionAiClient` 인터페이스로 교체 가능 |
@@ -141,26 +141,36 @@ JDBC URL `jdbc:h2:file:./data/izacare` · 사용자 `sa` · 비밀번호 없음.
 ## 프로젝트 구조
 
 ```
-izakaya-inventory-Prototype-/
-├── README.md
+IzaCare/
+├── README.md · CONTRIBUTING.md     # 협업 규칙(브랜치·PR·담당 영역)
 ├── build.gradle
 ├── docs/                          # 기획·설계 문서 (기획서, 요구사항, 화면 설계, ERD, WBS)
 ├── data/                          # (git 미추적) H2 파일 DB + 실사 사진
 └── src/
     ├── main/
-    │   ├── java/com/izacare/
-    │   │   ├── IzaCareApplication # 진입점
-    │   │   ├── domain/            # FoodItem, StockTransaction, StockAudit, Reservation, Member ...
-    │   │   ├── repository/        # Spring Data JPA
-    │   │   ├── service/           # InventoryService(입고/폐기), AuditService(AI 실사), NotificationService
-    │   │   ├── vision/            # VisionAiClient 인터페이스 + Gemini/Mock 구현체
-    │   │   ├── web/               # REST 컨트롤러 + 전역 예외 처리
-    │   │   └── dto/               # 요청/응답 record
+    │   ├── java/com/izacare/      # 기능(도메인)별 패키지 — 엔티티·리포지토리·서비스·컨트롤러가 함께 있다
+    │   │   ├── IzaCareApplication · DataSeeder
+    │   │   ├── common/web/        # 인증 인터셉터, 전역 예외 처리, 클라이언트 IP
+    │   │   ├── auth/              # 가입·로그인, 로그인/가입 시도 제한          (강경태)
+    │   │   ├── member/            # 회원, 직원 승인·퇴직·복직                  (강경태)
+    │   │   ├── store/             # 매장, 가게 코드, 가게 설정                  (강경태)
+    │   │   ├── notification/      # 알림 저장·발송, 알림 API                   (김가현)
+    │   │   ├── schedule/          # 근무 스케줄                                (김가현)
+    │   │   ├── dashboard/         # 사장님 대시보드                            (김가현)
+    │   │   ├── notice/            # 공지, 확인 체크, 수정 이력                  (서태민)
+    │   │   ├── report/            # 일보, 댓글, 수정 이력                       (서태민)
+    │   │   ├── attendance/        # 출퇴근, 출근 위치 확인 설정                  (서태민)
+    │   │   ├── reservation/       # 예약, 좌석 현황, 테이블·코스, 자동 공석      (유충열)
+    │   │   ├── inventory/         # 품목, 입고·폐기·수량 조정, 변동 이력         (이원준)
+    │   │   └── audit/             # AI 실사 (audit/vision: Gemini · Mock 인식)   (이원준)
     │   └── resources/
-    │       ├── static/            # index.html(SPA), app.css(디자인 시스템)
+    │       ├── static/
+    │       │   ├── index.html     # 화면 뼈대 + 스크립트·스타일 로드 순서
+    │       │   ├── js/            # core.js(공통·라우터) + 화면별 스크립트
+    │       │   └── css/           # base.css(디자인 토큰·공통) + 화면별 스타일 + overrides.css
     │       ├── application.yml
     │       └── secret.yml         # (git 미추적) Gemini API 키
-    └── test/
+    └── test/                      # 패키지 구조는 main 과 같다
 ```
 
 ## 문서
@@ -187,10 +197,10 @@ izakaya-inventory-Prototype-/
 
 ## 개발 규칙
 
-- **브랜치:** 기능별 `feature/*` 브랜치에서 작업 → PR로 `main` 병합.
+- **브랜치:** 기능별 `feature/*`·`refactor/*` 브랜치에서 작업 → 리뷰 1명 이상 승인 후 PR로 `main` 병합. 자세한 규칙과 영역별 담당은 [CONTRIBUTING.md](CONTRIBUTING.md).
 - **비밀값:** Gemini API 키는 `secret.yml`(git 미추적) 또는 환경변수로만 주입.
 - **스키마 변경:** `ddl-auto=update`는 기존 행이 있는 테이블에 기본값 없는 NOT NULL 컬럼을 붙이지 못함 → `columnDefinition`으로 DB 기본값 지정. 컬럼이 늘어나면 Flyway 도입.
-- **XSS 방지:** `index.html`에서 HTML을 만들 때는 반드시 `` html`...` `` 태그드 템플릿 사용.
+- **XSS 방지:** `js/*.js`에서 HTML을 만들 때는 반드시 `` html`...` `` 태그드 템플릿 사용.
   ```js
   el.innerHTML = html`<span>${item.name}</span>`;  // O
   el.innerHTML = `<span>${item.name}</span>`;      // X — XSS
