@@ -1,6 +1,5 @@
-package com.izacare.repository;
+package com.izacare.attendance;
 
-import com.izacare.domain.Attendance;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;

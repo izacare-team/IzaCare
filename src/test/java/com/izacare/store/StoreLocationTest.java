@@ -1,6 +1,6 @@
 package com.izacare.store;
 
-import com.izacare.domain.Attendance;
+import com.izacare.attendance.Attendance;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

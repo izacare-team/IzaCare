@@ -1,4 +1,4 @@
-package com.izacare.domain;
+package com.izacare.notice;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
