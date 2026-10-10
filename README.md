@@ -144,7 +144,7 @@ JDBC URL `jdbc:h2:file:./data/izacare` · 사용자 `sa` · 비밀번호 없음.
 IzaCare/
 ├── README.md · CONTRIBUTING.md     # 협업 규칙(브랜치·PR·담당 영역)
 ├── build.gradle
-├── docs/                          # 기획·설계 문서 (기획서, 요구사항, 화면 설계, ERD, WBS)
+├── docs/                          # 기획·설계 문서 (기획서, 요구사항, 화면 설계, ERD, WBS, 발표 자료)
 ├── data/                          # (git 미추적) H2 파일 DB + 실사 사진
 └── src/
     ├── main/
@@ -182,8 +182,14 @@ IzaCare/
 | [02. 요구사항 정의서](docs/02-요구사항정의서.md) | 기능 요구사항 73건(MoSCoW), 비기능 요구사항 24건 + 검증 방법 |
 | [03. 화면 설계서](docs/03-화면설계서.md) | 화면 흐름도·전이표, 화면 목록, REST API 명세 71개, 핵심 화면 상세 |
 | [04. ERD & 테이블 정의서](docs/04-ERD-테이블정의서.md) | ERD, 테이블 21개 · 컬럼 134개 정의 |
+| [05. 🎤 최종 발표 자료](docs/05-발표자료.md) | 슬라이드 18장 — 기획 배경, 핵심 기능 4가지, 설계 & 구조, 시연 순서, 다음 단계 ([PDF](docs/original/05_발표자료.pdf)) |
 
-> 문서와 코드가 다르면 코드가 정답입니다. 원본(docx/xlsx)은 [`docs/original/`](docs/original/)에 있습니다.
+> 문서와 코드가 다르면 코드가 정답입니다. 원본(docx/xlsx/pptx)은 [`docs/original/`](docs/original/)에 있습니다.
+
+<p align="center">
+  <a href="docs/05-발표자료.md"><img src="docs/images/presentation/slide-01.jpg" alt="IzaCare 발표 자료" width="560"></a>
+  <br><sub>▲ 발표 자료 보기</sub>
+</p>
 
 ## 팀 (5조)
 
