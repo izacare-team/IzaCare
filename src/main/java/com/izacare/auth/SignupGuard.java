@@ -1,4 +1,4 @@
-package com.izacare.service;
+package com.izacare.auth;
 
 import org.springframework.stereotype.Component;
 

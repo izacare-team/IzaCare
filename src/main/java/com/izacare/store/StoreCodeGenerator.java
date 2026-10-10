@@ -1,6 +1,5 @@
-package com.izacare.service;
+package com.izacare.store;
 
-import com.izacare.repository.StoreRepository;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;

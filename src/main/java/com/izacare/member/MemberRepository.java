@@ -1,6 +1,5 @@
-package com.izacare.repository;
+package com.izacare.member;
 
-import com.izacare.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

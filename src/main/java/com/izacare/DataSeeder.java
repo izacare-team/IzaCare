@@ -1,7 +1,17 @@
 package com.izacare;
 
-import com.izacare.domain.*;
-import com.izacare.repository.*;
+import com.izacare.domain.Course;
+import com.izacare.domain.DiningTable;
+import com.izacare.domain.FoodItem;
+import com.izacare.domain.Notice;
+import com.izacare.member.Member;
+import com.izacare.member.MemberRepository;
+import com.izacare.repository.CourseRepository;
+import com.izacare.repository.DiningTableRepository;
+import com.izacare.repository.FoodItemRepository;
+import com.izacare.repository.NoticeRepository;
+import com.izacare.store.Store;
+import com.izacare.store.StoreRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

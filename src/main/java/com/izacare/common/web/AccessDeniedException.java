@@ -1,4 +1,4 @@
-package com.izacare.web;
+package com.izacare.common.web;
 
 /**
  * 로그인은 되어 있지만 그 기능을 쓸 권한이 없을 때 (예: 알바생이 사장님 전용 알림을 열람).

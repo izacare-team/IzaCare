@@ -1,8 +1,6 @@
-package com.izacare.web;
+package com.izacare.member;
 
-import com.izacare.domain.Member;
 import com.izacare.domain.Notification;
-import com.izacare.repository.MemberRepository;
 import com.izacare.service.NotificationService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.transaction.annotation.Transactional;

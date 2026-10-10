@@ -1,19 +1,17 @@
-package com.izacare.web;
+package com.izacare.auth;
 
-import com.izacare.domain.Member;
+import com.izacare.common.web.ClientIpResolver;
 import com.izacare.domain.Notification;
-import com.izacare.domain.Store;
-import com.izacare.repository.MemberRepository;
-import com.izacare.repository.StoreRepository;
-import com.izacare.service.LoginGuard;
+import com.izacare.member.Member;
+import com.izacare.member.MemberRepository;
 import com.izacare.service.NotificationService;
-import com.izacare.service.SignupGuard;
-import com.izacare.service.StoreCodeGenerator;
+import com.izacare.store.Store;
+import com.izacare.store.StoreCodeGenerator;
+import com.izacare.store.StoreRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

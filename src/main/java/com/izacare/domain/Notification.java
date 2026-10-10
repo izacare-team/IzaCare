@@ -1,5 +1,6 @@
 package com.izacare.domain;
 
+import com.izacare.member.Member;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 

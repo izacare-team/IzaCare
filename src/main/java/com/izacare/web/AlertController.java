@@ -1,8 +1,9 @@
 package com.izacare.web;
 
+import com.izacare.common.web.AccessDeniedException;
 import com.izacare.domain.FoodItem;
-import com.izacare.domain.Member;
 import com.izacare.domain.Notification;
+import com.izacare.member.Member;
 import com.izacare.repository.FoodItemRepository;
 import com.izacare.service.NotificationService;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,8 +1,8 @@
 package com.izacare.service;
 
-import com.izacare.domain.Member;
 import com.izacare.domain.Notification;
-import com.izacare.repository.MemberRepository;
+import com.izacare.member.Member;
+import com.izacare.member.MemberRepository;
 import com.izacare.repository.NotificationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

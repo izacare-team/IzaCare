@@ -1,4 +1,4 @@
-package com.izacare.web;
+package com.izacare.common.web;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,15 +1,13 @@
-package com.izacare.web;
+package com.izacare.store;
 
+import com.izacare.common.web.ClientIpResolver;
 import com.izacare.domain.Course;
 import com.izacare.domain.DiningTable;
-import com.izacare.domain.Member;
 import com.izacare.domain.Reservation;
-import com.izacare.domain.Store;
+import com.izacare.member.Member;
 import com.izacare.repository.CourseRepository;
 import com.izacare.repository.DiningTableRepository;
 import com.izacare.repository.ReservationRepository;
-import com.izacare.repository.StoreRepository;
-import com.izacare.service.StoreCodeGenerator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -20,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
-import java.util.List;
 
 /** 가게 설정 (사장님 전용) — 가게이름·영업시간, 테이블 구성, 코드 재발급 */
 @RestController
@@ -28,20 +25,20 @@ import java.util.List;
 @Transactional
 public class StoreSettingController {
 
-    private final StoreRepository storeRepository;
+    private final StoreInfoService storeInfoService;
     private final DiningTableRepository tableRepository;
     private final ReservationRepository reservationRepository;
     private final CourseRepository courseRepository;
     private final StoreCodeGenerator codeGenerator;
     private final ClientIpResolver clientIpResolver;
 
-    public StoreSettingController(StoreRepository storeRepository,
+    public StoreSettingController(StoreInfoService storeInfoService,
                                   DiningTableRepository tableRepository,
                                   ReservationRepository reservationRepository,
                                   CourseRepository courseRepository,
                                   StoreCodeGenerator codeGenerator,
                                   ClientIpResolver clientIpResolver) {
-        this.storeRepository = storeRepository;
+        this.storeInfoService = storeInfoService;
         this.tableRepository = tableRepository;
         this.reservationRepository = reservationRepository;
         this.courseRepository = courseRepository;
@@ -52,25 +49,9 @@ public class StoreSettingController {
     private Member me(HttpServletRequest request) {
         return (Member) request.getAttribute("loginMember");
     }
-    private void requireOwner(HttpServletRequest request) {
-        if (!me(request).isOwner()) throw new IllegalStateException("사장님만 사용할 수 있는 기능입니다.");
-    }
-    private Store myStore(HttpServletRequest request) {
-        return storeRepository.findById(me(request).getStoreId())
-                .orElseThrow(() -> new IllegalStateException("가게 정보를 찾을 수 없습니다."));
-    }
 
-    public record StoreInfo(String name, String code, LocalTime open, LocalTime close,
-                            List<TableInfo> tables, List<CourseInfo> courses,
-                            AttendanceLocation attendanceLocation) {}
-    /** 출근 위치 확인 설정 (사장님에게만 내려간다) */
-    public record AttendanceLocation(Double latitude, Double longitude,
-                                     int radius, String allowedIp) {}
-    public record LocationUpdate(@NotNull Double latitude, @NotNull Double longitude,
-                                 Integer radius) {}
-    public record TableInfo(Long id, int number, int capacity) {}
-    public record CourseInfo(Long id, String name, Integer durationMinutes, boolean unlimitedRefill) {}
     public record StoreUpdate(@NotBlank String name, String open, String close) {}
+    public record LocationUpdate(@NotNull Double latitude, @NotNull Double longitude, Integer radius) {}
     public record TableAddRequest(@Min(1) int number, @Min(1) int capacity) {}
     public record CourseAddRequest(@NotBlank String name, Integer durationMinutes, Boolean unlimitedRefill) {}
 
@@ -78,29 +59,16 @@ public class StoreSettingController {
     @GetMapping
     @Transactional(readOnly = true)
     public StoreInfo info(HttpServletRequest request) {
-        Store s = myStore(request);
-        List<TableInfo> tables = tableRepository.findByStoreIdAndActiveTrueOrderByTableNumberAsc(s.getId()).stream()
-                .map(t -> new TableInfo(t.getId(), t.getTableNumber(), t.getCapacity())).toList();
-        List<CourseInfo> courses = courseRepository.findByStoreIdOrderByIdAsc(s.getId()).stream()
-                .map(c -> new CourseInfo(c.getId(), c.getName(), c.getDurationMinutes(), c.isUnlimitedRefill()))
-                .toList();
-        boolean owner = me(request).isOwner();
-        String code = owner ? s.getCode() : null;
-        AttendanceLocation location = owner
-                ? new AttendanceLocation(s.getLatitude(), s.getLongitude(),
-                                         s.getAttendanceRadius(), s.getAllowedIp())
-                : null;
-        return new StoreInfo(s.getName(), code, s.getBusinessOpen(), s.getBusinessClose(),
-                tables, courses, location);
+        return storeInfoService.info(me(request));
     }
 
     @PatchMapping
     public StoreInfo update(@Valid @RequestBody StoreUpdate req, HttpServletRequest request) {
-        requireOwner(request);
-        Store s = myStore(request);
+        storeInfoService.requireOwner(me(request));
+        Store s = storeInfoService.storeOf(me(request));
         s.rename(req.name().trim());
         s.setBusinessHours(parse(req.open()), parse(req.close()));
-        return info(request);
+        return storeInfoService.info(me(request));
     }
 
     /**
@@ -111,7 +79,7 @@ public class StoreSettingController {
     @PostMapping("/tables")
     @ResponseStatus(HttpStatus.CREATED)
     public StoreInfo addTable(@Valid @RequestBody TableAddRequest req, HttpServletRequest request) {
-        requireOwner(request);
+        storeInfoService.requireOwner(me(request));
         Long storeId = me(request).getStoreId();
         DiningTable existing = tableRepository
                 .findByStoreIdAndTableNumber(storeId, req.number()).orElse(null);
@@ -124,7 +92,7 @@ public class StoreSettingController {
         } else {
             tableRepository.save(new DiningTable(storeId, req.number(), req.capacity()));
         }
-        return info(request);
+        return storeInfoService.info(me(request));
     }
 
     /**
@@ -134,7 +102,7 @@ public class StoreSettingController {
      */
     @DeleteMapping("/tables/{id}")
     public StoreInfo removeTable(@PathVariable Long id, HttpServletRequest request) {
-        requireOwner(request);
+        storeInfoService.requireOwner(me(request));
         DiningTable t = tableRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("테이블을 찾을 수 없습니다."));
         Long storeId = me(request).getStoreId();
@@ -151,13 +119,13 @@ public class StoreSettingController {
         } else {
             tableRepository.delete(t);
         }
-        return info(request);
+        return storeInfoService.info(me(request));
     }
 
     @PostMapping("/courses")
     @ResponseStatus(HttpStatus.CREATED)
     public StoreInfo addCourse(@Valid @RequestBody CourseAddRequest req, HttpServletRequest request) {
-        requireOwner(request);
+        storeInfoService.requireOwner(me(request));
         Long storeId = me(request).getStoreId();
         String name = req.name().trim();
         if (courseRepository.existsByStoreIdAndName(storeId, name)) {
@@ -166,54 +134,54 @@ public class StoreSettingController {
         Integer duration = req.durationMinutes() == null || req.durationMinutes() <= 0 ? null : req.durationMinutes();
         boolean refill = Boolean.TRUE.equals(req.unlimitedRefill());
         courseRepository.save(new Course(storeId, name, duration, refill));
-        return info(request);
+        return storeInfoService.info(me(request));
     }
 
     @DeleteMapping("/courses/{id}")
     public StoreInfo removeCourse(@PathVariable Long id, HttpServletRequest request) {
-        requireOwner(request);
+        storeInfoService.requireOwner(me(request));
         Course c = courseRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("코스를 찾을 수 없습니다."));
         if (!c.getStoreId().equals(me(request).getStoreId())) {
             throw new IllegalArgumentException("우리 가게 코스가 아닙니다.");
         }
         courseRepository.delete(c);
-        return info(request);
+        return storeInfoService.info(me(request));
     }
 
-    /** 가게 코드 재발급 — 유출 시 이전 코드를 무효화한다 */
     // ===== 출근 위치 확인 설정 =====
 
     /** 사장님이 매장에서 "현재 위치로 설정"을 눌렀을 때 — 그 좌표가 매장 기준점이 된다 */
     @PatchMapping("/attendance-location")
     public StoreInfo setAttendanceLocation(@Valid @RequestBody LocationUpdate req,
                                            HttpServletRequest request) {
-        requireOwner(request);
-        myStore(request).setAttendanceLocation(req.latitude(), req.longitude(), req.radius());
-        return info(request);
+        storeInfoService.requireOwner(me(request));
+        storeInfoService.storeOf(me(request)).setAttendanceLocation(req.latitude(), req.longitude(), req.radius());
+        return storeInfoService.info(me(request));
     }
 
     /** 매장 Wi-Fi에서 이 버튼을 눌러야 한다 — 지금 접속한 공인 IP를 매장 IP로 등록한다 */
     @PostMapping("/attendance-ip")
     public StoreInfo setAttendanceIp(HttpServletRequest request) {
-        requireOwner(request);
-        myStore(request).setAllowedIp(clientIpResolver.resolve(request));
-        return info(request);
+        storeInfoService.requireOwner(me(request));
+        storeInfoService.storeOf(me(request)).setAllowedIp(clientIpResolver.resolve(request));
+        return storeInfoService.info(me(request));
     }
 
     @DeleteMapping("/attendance-ip")
     public StoreInfo clearAttendanceIp(HttpServletRequest request) {
-        requireOwner(request);
-        myStore(request).setAllowedIp(null);
-        return info(request);
+        storeInfoService.requireOwner(me(request));
+        storeInfoService.storeOf(me(request)).setAllowedIp(null);
+        return storeInfoService.info(me(request));
     }
 
+    /** 가게 코드 재발급 — 유출 시 이전 코드를 무효화한다 */
     @PostMapping("/regenerate-code")
     public StoreInfo regenerateCode(HttpServletRequest request) {
-        requireOwner(request);
-        Store s = myStore(request);
+        storeInfoService.requireOwner(me(request));
+        Store s = storeInfoService.storeOf(me(request));
         s.changeCode(codeGenerator.generateUnique());
-        return info(request);
+        return storeInfoService.info(me(request));
     }
 
     private LocalTime parse(String hhmm) {

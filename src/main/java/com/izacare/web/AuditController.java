@@ -1,8 +1,9 @@
 package com.izacare.web;
 
-import com.izacare.domain.Member;
+import com.izacare.common.web.ClientIpResolver;
 import com.izacare.dto.Dtos.AuditResponse;
 import com.izacare.dto.Dtos.OverrideLineRequest;
+import com.izacare.member.Member;
 import com.izacare.service.AuditService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
