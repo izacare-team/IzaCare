@@ -1,19 +1,13 @@
-package com.izacare.web;
+package com.izacare.reservation;
 
-import com.izacare.domain.Course;
-import com.izacare.domain.DiningTable;
-import com.izacare.domain.Reservation;
 import com.izacare.member.Member;
 import com.izacare.notification.Notification;
 import com.izacare.notification.NotificationService;
-import com.izacare.repository.CourseRepository;
-import com.izacare.repository.DiningTableRepository;
-import com.izacare.repository.ReservationRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -29,17 +23,17 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api")
 @Transactional
-public class StoreController {
+public class ReservationController {
 
     private final DiningTableRepository tableRepository;
     private final ReservationRepository reservationRepository;
     private final CourseRepository courseRepository;
     private final NotificationService notificationService;
 
-    public StoreController(DiningTableRepository tableRepository,
-                           ReservationRepository reservationRepository,
-                           CourseRepository courseRepository,
-                           NotificationService notificationService) {
+    public ReservationController(DiningTableRepository tableRepository,
+                                 ReservationRepository reservationRepository,
+                                 CourseRepository courseRepository,
+                                 NotificationService notificationService) {
         this.tableRepository = tableRepository;
         this.reservationRepository = reservationRepository;
         this.courseRepository = courseRepository;
@@ -52,8 +46,6 @@ public class StoreController {
     private Long sid(HttpServletRequest request) {
         return loginMember(request).getStoreId();
     }
-
-    // ================= 예약 =================
 
     /** id=테이블 PK(선택·예약용), number=가게 내 표시번호 */
     public record TableResponse(Long id, int number, int capacity, boolean reserved) {}

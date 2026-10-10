@@ -1,6 +1,7 @@
-package com.izacare.domain;
+package com.izacare.reservation;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
