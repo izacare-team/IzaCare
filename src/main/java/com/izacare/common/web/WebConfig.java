@@ -1,4 +1,4 @@
-package com.izacare.web;
+package com.izacare.common.web;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

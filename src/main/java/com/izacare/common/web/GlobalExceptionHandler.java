@@ -1,4 +1,4 @@
-package com.izacare.web;
+package com.izacare.common.web;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;

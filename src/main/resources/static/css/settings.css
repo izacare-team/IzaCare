@@ -1,0 +1,30 @@
+/* ===================== 가게 코드 카드 (다크 하이라이트) ===================== */
+.code-card {
+  background: #1e2a44;
+  border-radius: var(--r-lg);
+  padding: 22px 20px; margin-bottom: 14px;
+  text-align: center;
+}
+.code-card-label { font-size: 13px; font-weight: 600; color: #aab4cc; }
+.code-card-value {
+  display: flex; align-items: center; justify-content: center;
+  gap: 12px; flex-wrap: wrap; margin: 12px 0 18px;
+}
+.code-text {
+  font-size: 34px; font-weight: 800; letter-spacing: 6px; color: #ffffff;
+}
+.code-copy {
+  font-family: inherit; font-size: 13px; font-weight: 600;
+  color: #cfd6e6; background: #2c3a58; border: none;
+  border-radius: var(--r-sm); padding: 7px 12px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 5px;
+}
+.code-copy:active { background: #37476b; }
+.code-regen {
+  font-family: inherit; font-size: 14px; font-weight: 700;
+  color: #e8ecf5; background: none;
+  border: 1.5px solid #55617e; border-radius: var(--r-pill);
+  padding: 9px 24px; cursor: pointer;
+}
+.code-regen:active { background: rgba(255, 255, 255, .07); }
+.code-hint { color: #8a93a9; font-size: 12px; margin: 12px 0 0; }

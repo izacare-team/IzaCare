@@ -1,7 +1,8 @@
-package com.izacare.web;
+package com.izacare.common.web;
 
-import com.izacare.domain.Member;
-import com.izacare.repository.MemberRepository;
+import com.izacare.auth.AuthController;
+import com.izacare.member.Member;
+import com.izacare.member.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;

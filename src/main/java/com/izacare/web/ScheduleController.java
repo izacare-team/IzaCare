@@ -1,9 +1,9 @@
 package com.izacare.web;
 
-import com.izacare.domain.Member;
 import com.izacare.domain.Notification;
 import com.izacare.domain.WorkSchedule;
-import com.izacare.repository.MemberRepository;
+import com.izacare.member.Member;
+import com.izacare.member.MemberRepository;
 import com.izacare.repository.WorkScheduleRepository;
 import com.izacare.service.NotificationService;
 import jakarta.servlet.http.HttpServletRequest;
