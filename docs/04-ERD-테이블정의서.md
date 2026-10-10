@@ -233,7 +233,7 @@ erDiagram
 | 17 | [`report_history`](#report_history) | 일보 수정 이력 | 일보를 고치기 직전의 내용을 그대로 보관한다. | N:1 → daily_report | 서태민 |
 | 18 | [`comment_history`](#comment_history) | 댓글 수정 이력 | 댓글을 고치기 직전의 내용을 그대로 보관한다. | N:1 → report_comment | 서태민 |
 | 19 | [`attendance`](#attendance) | 근태 기록 | 직원 1명의 하루 1건. 출근·휴게·퇴근 시각과 출근 위치 확인 결과를 담는다. 심야 영업을 고려해 근무일은 영업일 기준(기본 새벽 6시 경계)으로 잡는다. | 논리적 N:1 → store | 서태민 |
-| 20 | [`work_schedule`](#work_schedule) | 근무 스케줄 | 사장이 등록하는 직원별 근무 예정. 같은 직원의 같은 날짜에는 1건만 둔다. | N:1 → member | 김가현 |
+| 20 | [`work_schedule`](#work_schedule) | 근무 스케줄 | 사장이 등록하는 직원별 근무 예정. 같은 직원·같은 날짜의 중복을 DB에서 막지 않는다(유니크 제약 없음). | N:1 → member | 김가현 |
 | 21 | [`notification`](#notification) | 알림 | 발생 시점이 중요한 이벤트만 저장한다. 재고 부족은 재고에서 실시간 파생하므로 저장하지 않는다. | N:1 → member (수신자) | 김가현 |
 
 ## 공통 설계 규칙
@@ -270,7 +270,7 @@ erDiagram
 
 **③ created_at · updated_at 을 모든 테이블에 두지 않았다**
 
-- created_at 은 21개 중 5개에만 있고, updated_at 은 어느 테이블에도 없다.
+- created_at 은 21개 중 6개에만 있고, updated_at 은 어느 테이블에도 없다.
 - 대신 변경 이력이 중요한 도메인은 별도 이력 테이블로 남긴다
 - — notice_history, report_history, comment_history.
 - 최종 수정 시각이 필요한 곳에는 edited_at 을 둔다.
@@ -585,14 +585,14 @@ erDiagram
 
 ### work_schedule
 
-**근무 스케줄** — 사장이 등록하는 직원별 근무 예정. 같은 직원의 같은 날짜에는 1건만 둔다.
+**근무 스케줄** — 사장이 등록하는 직원별 근무 예정. 같은 직원·같은 날짜의 중복을 DB에서 막지 않는다(유니크 제약 없음).
 
 | No | 컬럼 | 논리명 | 타입 | NN | PK | FK | UK | IDX | 기본값 | 설명 · 제약 |
 |:-:|---|---|---|:-:|:-:|:-:|:-:|:-:|---|---|
 | 1 | `id` | 스케줄 번호 | `BIGINT` | ✓ | ✓ |  |  |  | AUTO_INCREMENT | 기본키 |
 | 2 | `store_id` | 매장 번호 | `BIGINT` | ✓ |  |  |  |  |  | 논리적 FK. 직원에서 파생 |
 | 3 | `member_id` | 직원 번호 | `BIGINT` | ✓ |  | ✓ |  | ✓ |  | member.id 참조 |
-| 4 | `work_date` | 근무 날짜 | `DATE` | ✓ |  |  |  |  |  | 같은 직원의 같은 날짜에는 1건만 둔다 |
+| 4 | `work_date` | 근무 날짜 | `DATE` | ✓ |  |  |  |  |  | 같은 직원·같은 날짜의 중복을 DB에서 막지 않는다(유니크 제약 없음) |
 | 5 | `start_time` | 시작 시각 | `TIME` |  |  |  |  |  |  |  |
 | 6 | `end_time` | 종료 시각 | `TIME` |  |  |  |  |  |  |  |
 | 7 | `memo` | 메모 | `VARCHAR(255)` |  |  |  |  |  |  |  |

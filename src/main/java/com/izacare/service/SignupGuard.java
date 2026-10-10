@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 회원가입 남용(테러) 방지 — 같은 IP가 1시간 내 3회 이상 가입하면 1시간 동안 차단.
+ * 회원가입 남용(테러) 방지 — 같은 IP가 1시간 내 5회 가입을 시도하면, 가장 오래된 시도로부터 1시간이 지날 때까지 차단.
  * 메모리 기반이라 서버 재시작 시 초기화된다(가벼운 방어 목적).
  */
 @Component
