@@ -1,0 +1,161 @@
+/* 확정 팝업 (예약 등) — 화면 중앙에 크게 떠서 눈에 잘 띈다 */
+.toast-backdrop {
+  position: fixed; inset: 0; z-index: 200;
+  background: var(--backdrop);
+  display: flex; align-items: center; justify-content: center;
+  animation: toastFade .15s ease-out;
+}
+.toast-pop {
+  background: var(--paper); color: var(--ink);
+  border-radius: var(--r-lg); padding: 28px 32px;
+  text-align: center; max-width: 300px;
+  box-shadow: 0 14px 44px rgba(0, 0, 0, .28);
+  animation: toastPop .2s ease-out;
+}
+.toast-pop .ic { font-size: 46px; line-height: 1; margin-bottom: 10px; }
+.toast-pop .tx { font-size: 16px; font-weight: 700; }
+@keyframes toastFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes toastPop  { from { transform: scale(.85); opacity: .4; } to { transform: none; opacity: 1; } }
+
+/* ===================== 예약 목록 ===================== */
+.date-head {
+  background: var(--hover);
+  border: 1px solid var(--line); border-bottom: none;
+  padding: 9px 14px; font-weight: 700; font-size: 13px; color: var(--sub);
+}
+.resv-row {
+  background: var(--paper);
+  border: 1px solid var(--line); border-bottom: none;
+  padding: 14px; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 15px; font-weight: 600;
+}
+.resv-row:hover { background: var(--hover); }
+#rlist > *:first-child { border-radius: var(--r-md) var(--r-md) 0 0; }
+#rlist > *:last-child {
+  border-bottom: 1px solid var(--line);
+  border-radius: 0 0 var(--r-md) var(--r-md);
+}
+
+/* 예약 메뉴 */
+.menu-btns {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 16px; margin-top: 60px;
+}
+.menu-btns button { width: 80%; padding: 18px 0; font-size: 17px; }
+
+/* ===================== 코스 =====================
+   분류별 그룹 디자인: "음료·술 무제한 코스"(초록) / "일반 코스"(주황) 두 묶음.
+   묶음 제목은 색 막대 + 색 글씨, 각 코스는 흰 카드 + 왼쪽 색 막대 + 오른쪽 선택 원. */
+.course-list { display: flex; flex-direction: column; gap: 10px; }
+
+/* 묶음 제목 — 짧은 색 막대 + 색 글씨로 선택 불가임을 나타낸다 */
+.course-group-head {
+  display: flex; align-items: center; gap: 8px;
+  background: none; border: none;
+  padding: 4px 2px; margin-top: 16px;
+  font-weight: 800; font-size: 14px;
+  cursor: default; user-select: none;
+}
+.course-list > .course-group-head:first-child { margin-top: 2px; }
+.course-group-head::before {
+  content: ""; flex-shrink: 0;
+  width: 4px; height: 15px; border-radius: 2px;
+}
+.course-group-head.cg-refill         { color: var(--green); }
+.course-group-head.cg-refill::before { background: var(--green); }
+.course-group-head.cg-normal         { color: var(--orange); }
+.course-group-head.cg-normal::before { background: var(--orange); }
+.course-group-empty {
+  color: var(--sub); font-size: 13px;
+  padding: 2px 2px 2px 14px; border-bottom: none;
+}
+
+/* 실제 코스 항목 — 흰 카드 + 왼쪽 색 막대 + 오른쪽 선택 원 */
+.course-item {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+  padding: 15px 16px;
+  color: var(--ink); font-weight: 600;
+  cursor: pointer;
+  transition: background .15s, box-shadow .15s, transform .08s;
+}
+.course-item:hover  { background: var(--hover); }
+.course-item:active { transform: scale(.99); }
+.course-item.cg-refill { border-left-color: var(--green); }
+.course-item.cg-normal { border-left-color: var(--orange); }
+
+/* 설정 화면처럼 선택이 아닌 목록용 */
+.course-item.static { cursor: default; box-shadow: none; }
+.course-item.static:hover { background: var(--paper); }
+
+.course-item .c-name  { min-width: 0; }
+.course-item .c-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+/* 오른쪽 선택 원 (비행기·KTX 좌석 선택 느낌) */
+.c-radio {
+  width: 22px; height: 22px; border-radius: 50%;
+  border: 2px solid var(--line); flex-shrink: 0;
+  transition: border-color .15s, background .15s;
+}
+.course-item.cg-refill .c-radio { border-color: var(--green); }
+.course-item.cg-normal .c-radio { border-color: var(--orange); }
+
+/* ul.plain li 기본 여백·구분선(specificity 0,1,2)이 카드 스타일을 덮지 않도록 재지정 */
+.course-list .course-group-head  { padding: 4px 2px; border-bottom: none; }
+.course-list .course-group-empty { padding: 2px 2px 2px 14px; border-bottom: none; }
+.course-list .course-item        { padding: 15px 16px; }
+
+.badge-timed {
+  display: inline-block; padding: 2px 10px; border-radius: var(--r-pill);
+  font-size: 11px; font-weight: 700; white-space: nowrap;
+  background: var(--shell); color: var(--sub);
+}
+
+/* ===================== 예약 상세 ===================== */
+.resv-detail { padding: 20px; font-size: 15px; line-height: 2; }
+.resv-detail .who { font-weight: 800; font-size: 20px; margin-bottom: 6px; }
+
+/* ===================== 테이블 배치 ===================== */
+.table-map {
+  position: relative; height: 420px; margin-top: 10px;
+  border: 1px solid var(--line); border-radius: var(--r-md);
+}
+.table-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin-top: 12px;
+}
+.tbl-cell {
+  border: 1px solid var(--line); border-radius: var(--r-md);
+  background: var(--paper); font-family: inherit; cursor: pointer; color: var(--ink);
+  padding: 16px 0; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  transition: background .15s, border-color .15s;
+}
+.tbl-cell .tno { font-size: 19px; font-weight: 800; }
+.tbl-cell small { font-size: 11px; color: var(--sub); }
+.tbl-cell.reserved {
+  background: var(--red-bg); border-color: var(--red-bg); color: var(--red);
+  cursor: not-allowed; text-decoration: line-through;
+}
+.tbl-cell.reserved small { color: var(--red); opacity: .7; }
+.tbl-cell.sel { background: var(--blue); border-color: var(--blue); color: var(--on-accent); }
+.tbl-cell.sel small { color: var(--on-accent); opacity: .85; }
+
+.tbl {
+  position: absolute;
+  border: 1px solid var(--line); border-radius: var(--r-sm);
+  background: var(--paper);
+  font-family: inherit; font-size: 17px; font-weight: 700;
+  cursor: pointer; color: var(--ink);
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+}
+.tbl small { font-size: 11px; font-weight: 400; color: var(--sub); }
+.tbl.reserved {
+  background: var(--red-bg); color: var(--red);
+  cursor: not-allowed; text-decoration: line-through;
+}
+.tbl.sel { background: var(--blue); border-color: var(--blue); color: var(--on-accent); }
