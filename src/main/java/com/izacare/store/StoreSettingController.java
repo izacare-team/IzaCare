@@ -1,6 +1,5 @@
 package com.izacare.store;
 
-import com.izacare.common.web.ClientIpResolver;
 import com.izacare.domain.Course;
 import com.izacare.domain.DiningTable;
 import com.izacare.domain.Reservation;
@@ -12,14 +11,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
 
-/** 가게 설정 (사장님 전용) — 가게이름·영업시간, 테이블 구성, 코드 재발급 */
+/** 가게 설정 (사장님 전용) — 가게 이름·영업시간, 코드 재발급 */
 @RestController
 @RequestMapping("/api/store")
 @Transactional
@@ -30,20 +28,17 @@ public class StoreSettingController {
     private final ReservationRepository reservationRepository;
     private final CourseRepository courseRepository;
     private final StoreCodeGenerator codeGenerator;
-    private final ClientIpResolver clientIpResolver;
 
     public StoreSettingController(StoreInfoService storeInfoService,
                                   DiningTableRepository tableRepository,
                                   ReservationRepository reservationRepository,
                                   CourseRepository courseRepository,
-                                  StoreCodeGenerator codeGenerator,
-                                  ClientIpResolver clientIpResolver) {
+                                  StoreCodeGenerator codeGenerator) {
         this.storeInfoService = storeInfoService;
         this.tableRepository = tableRepository;
         this.reservationRepository = reservationRepository;
         this.courseRepository = courseRepository;
         this.codeGenerator = codeGenerator;
-        this.clientIpResolver = clientIpResolver;
     }
 
     private Member me(HttpServletRequest request) {
@@ -51,7 +46,6 @@ public class StoreSettingController {
     }
 
     public record StoreUpdate(@NotBlank String name, String open, String close) {}
-    public record LocationUpdate(@NotNull Double latitude, @NotNull Double longitude, Integer radius) {}
     public record TableAddRequest(@Min(1) int number, @Min(1) int capacity) {}
     public record CourseAddRequest(@NotBlank String name, Integer durationMinutes, Boolean unlimitedRefill) {}
 
@@ -146,32 +140,6 @@ public class StoreSettingController {
             throw new IllegalArgumentException("우리 가게 코스가 아닙니다.");
         }
         courseRepository.delete(c);
-        return storeInfoService.info(me(request));
-    }
-
-    // ===== 출근 위치 확인 설정 =====
-
-    /** 사장님이 매장에서 "현재 위치로 설정"을 눌렀을 때 — 그 좌표가 매장 기준점이 된다 */
-    @PatchMapping("/attendance-location")
-    public StoreInfo setAttendanceLocation(@Valid @RequestBody LocationUpdate req,
-                                           HttpServletRequest request) {
-        storeInfoService.requireOwner(me(request));
-        storeInfoService.storeOf(me(request)).setAttendanceLocation(req.latitude(), req.longitude(), req.radius());
-        return storeInfoService.info(me(request));
-    }
-
-    /** 매장 Wi-Fi에서 이 버튼을 눌러야 한다 — 지금 접속한 공인 IP를 매장 IP로 등록한다 */
-    @PostMapping("/attendance-ip")
-    public StoreInfo setAttendanceIp(HttpServletRequest request) {
-        storeInfoService.requireOwner(me(request));
-        storeInfoService.storeOf(me(request)).setAllowedIp(clientIpResolver.resolve(request));
-        return storeInfoService.info(me(request));
-    }
-
-    @DeleteMapping("/attendance-ip")
-    public StoreInfo clearAttendanceIp(HttpServletRequest request) {
-        storeInfoService.requireOwner(me(request));
-        storeInfoService.storeOf(me(request)).setAllowedIp(null);
         return storeInfoService.info(me(request));
     }
 

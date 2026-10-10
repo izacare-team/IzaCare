@@ -1,15 +1,14 @@
 package com.izacare.dashboard;
 
+import com.izacare.attendance.AttendanceRepository;
 import com.izacare.common.web.AccessDeniedException;
 import com.izacare.domain.FoodItem;
 import com.izacare.member.Member;
 import com.izacare.notification.AlertController;
 import com.izacare.notification.NotificationRepository;
-import com.izacare.repository.AttendanceRepository;
 import com.izacare.repository.FoodItemRepository;
 import com.izacare.repository.ReservationRepository;
 import com.izacare.store.StoreRepository;
-import com.izacare.web.StoreController;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -123,7 +122,7 @@ public class DashboardController {
                                 + (a.getBreakAt() != null && a.getBreakEnd() == null ? " (휴게 중)" : "")
                                 // 매장 밖/위치 미확인 출근은 사장님이 바로 알아볼 수 있게 붙인다
                                 + (a.isLocationSuspicious()
-                                   ? " · " + StoreController.locationLabel(a) : ""),
+                                   ? " · " + a.locationLabel() : ""),
                         "staff", null))
                 .toList();
 

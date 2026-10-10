@@ -17,20 +17,6 @@
 @keyframes toastFade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes toastPop  { from { transform: scale(.85); opacity: .4; } to { transform: none; opacity: 1; } }
 
-/* 공지 입력 — 크기 고정 (사용자가 늘릴 수 없음) */
-.notice-input {
-  resize: none; height: 78px; line-height: 1.45;
-}
-
-/* ===================== 공지 확인 ===================== */
-.ack-btn {
-  font-family: inherit; font-size: 12px; font-weight: 600;
-  border: 1px solid var(--green); border-radius: var(--r-pill);
-  background: var(--paper); color: var(--green);
-  padding: 4px 12px; cursor: pointer;
-}
-.ack-done { color: var(--green); font-weight: 600; font-size: 13px; }
-
 /* ===================== 예약 목록 ===================== */
 .date-head {
   background: var(--hover);
@@ -133,39 +119,6 @@
 .resv-detail { padding: 20px; font-size: 15px; line-height: 2; }
 .resv-detail .who { font-weight: 800; font-size: 20px; margin-bottom: 6px; }
 
-/* ===================== 댓글 ===================== */
-.comment-row { padding: 11px 2px; border-bottom: 1px solid var(--line); font-size: 14px; }
-.comment-row .who { font-weight: 700; margin-right: 8px; }
-.comment-row .when { color: var(--sub); font-size: 11px; margin-left: 6px; }
-.comment-row .cm-head { display: flex; align-items: center; gap: 4px; margin-bottom: 5px; }
-.comment-row .cm-body { white-space: pre-wrap; }
-.comment-row .cm-acts { margin-left: auto; display: flex; gap: 4px; }
-.cm-act {
-  background: none; border: none; font-family: inherit;
-  font-size: 12px; font-weight: 600; color: var(--sub);
-  padding: 2px 6px; border-radius: var(--r-sm); cursor: pointer;
-}
-.cm-act:hover { background: var(--hover); color: var(--ink); }
-.cm-act.del:hover { color: var(--red); }
-.cm-edit { display: flex; gap: 6px; align-items: center; margin-top: 2px; }
-.cm-edit input { flex: 1; }
-.cm-edit .act { white-space: nowrap; font-size: 13px; }
-
-/* ===================== 수정 이력 ===================== */
-.edited-btn {
-  font-family: inherit; font-size: 11px; font-weight: 600;
-  border: 1px solid var(--purple); border-radius: var(--r-pill);
-  background: var(--purple-bg); color: var(--purple);
-  padding: 2px 9px; cursor: pointer; margin-left: 6px;
-}
-.history-box {
-  border-left: 3px solid var(--purple);
-  background: var(--purple-bg); padding: 10px 12px; margin-top: 8px;
-  font-size: 13px; border-radius: var(--r-sm);
-}
-.history-box .meta { color: var(--purple-sub); font-size: 11px; }
-.history-box .old { white-space: pre-wrap; text-decoration: line-through; opacity: .7; }
-
 /* ===================== 액션 시트 ===================== */
 .sheet-backdrop {
   position: fixed; inset: 0; background: var(--backdrop);
@@ -254,49 +207,6 @@ input.num {
 .audit-row .cols { text-align: center; font-size: 11px; line-height: 1.3; color: var(--sub); }
 .audit-row .cols b { font-size: 16px; font-weight: 800; color: var(--ink); display: block; }
 .audit-row input { width: 58px; text-align: center; padding: 6px 4px; font-weight: 700; }
-
-/* ===================== 출퇴근 =====================
-   버튼 하나가 곧 그 단계의 상태 표시다.
-   아직 안 찍음 → 흰 카드 + 라벨 / 찍음 → 파란 카드 + 라벨(작게) + 시각(크게) */
-.clock-list {
-  display: flex; flex-direction: column; gap: 12px;
-  margin: 40px auto 0; max-width: 300px;
-}
-.clock-btn {
-  width: 100%; min-height: 74px;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 2px;
-  padding: 14px 16px;
-  background: var(--paper);
-  border: 1px solid var(--line); border-radius: var(--r-lg);
-  box-shadow: var(--shadow-sm);
-  font-family: inherit; cursor: pointer;
-  transition: background .15s, border-color .15s, box-shadow .15s;
-}
-.clock-btn:active { background: var(--press); }
-.clock-label { font-size: 17px; font-weight: 700; color: var(--ink); }
-
-/* 이미 찍은 단계 */
-.clock-btn.done {
-  background: var(--blue-bg);
-  border-color: var(--blue-line);
-  box-shadow: none;
-}
-.clock-cap { font-size: 12px; font-weight: 600; color: var(--sub); }
-.clock-at  { font-size: 23px; font-weight: 800; color: var(--blue); line-height: 1.15; }
-
-/* 아직 순서가 아닌 단계는 흐리게, 이미 찍은 단계는 선명하게 유지 */
-.clock-btn:disabled { cursor: not-allowed; }
-.clock-btn:not(.done):disabled { opacity: .45; }
-.clock-btn:not(.done):disabled:active { background: var(--paper); }
-.clock-btn.done:disabled { opacity: 1; }
-
-/* ===================== 일보 ===================== */
-.report-row {
-  padding: 15px 16px; margin-bottom: 10px; cursor: pointer;
-  font-size: 15px; font-weight: 600;
-  display: flex; justify-content: space-between;
-}
 
 /* ===================== 테이블 배치 ===================== */
 .table-map {

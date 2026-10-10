@@ -1,6 +1,5 @@
-package com.izacare.repository;
+package com.izacare.report;
 
-import com.izacare.domain.ReportHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

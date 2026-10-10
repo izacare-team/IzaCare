@@ -1,0 +1,35 @@
+/* ===================== 출퇴근 =====================
+   버튼 하나가 곧 그 단계의 상태 표시다.
+   아직 안 찍음 → 흰 카드 + 라벨 / 찍음 → 파란 카드 + 라벨(작게) + 시각(크게) */
+.clock-list {
+  display: flex; flex-direction: column; gap: 12px;
+  margin: 40px auto 0; max-width: 300px;
+}
+.clock-btn {
+  width: 100%; min-height: 74px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 2px;
+  padding: 14px 16px;
+  background: var(--paper);
+  border: 1px solid var(--line); border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  font-family: inherit; cursor: pointer;
+  transition: background .15s, border-color .15s, box-shadow .15s;
+}
+.clock-btn:active { background: var(--press); }
+.clock-label { font-size: 17px; font-weight: 700; color: var(--ink); }
+
+/* 이미 찍은 단계 */
+.clock-btn.done {
+  background: var(--blue-bg);
+  border-color: var(--blue-line);
+  box-shadow: none;
+}
+.clock-cap { font-size: 12px; font-weight: 600; color: var(--sub); }
+.clock-at  { font-size: 23px; font-weight: 800; color: var(--blue); line-height: 1.15; }
+
+/* 아직 순서가 아닌 단계는 흐리게, 이미 찍은 단계는 선명하게 유지 */
+.clock-btn:disabled { cursor: not-allowed; }
+.clock-btn:not(.done):disabled { opacity: .45; }
+.clock-btn:not(.done):disabled:active { background: var(--paper); }
+.clock-btn.done:disabled { opacity: 1; }

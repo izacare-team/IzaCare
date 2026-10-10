@@ -1,6 +1,5 @@
-package com.izacare.repository;
+package com.izacare.notice;
 
-import com.izacare.domain.NoticeAck;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

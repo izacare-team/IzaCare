@@ -1,4 +1,4 @@
-package com.izacare.domain;
+package com.izacare.attendance;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -119,6 +119,21 @@ public class Attendance {
     public void recordClockInLocation(LocationCheck check, Integer distanceMeters) {
         this.clockInLocation = check;
         this.clockInDistance = distanceMeters;
+    }
+
+    /** 출근 위치 판정 문구 — 근태 화면과 사장님 대시보드가 같은 문구를 쓴다 */
+    public String locationLabel() {
+        if (clockInLocation == null) return null;
+        return switch (clockInLocation) {
+            case GPS_OK -> "매장에서 출근" + (clockInDistance == null ? "" : " · " + clockInDistance + "m");
+            case IP_OK -> "매장 Wi-Fi에서 출근";
+            case OUTSIDE -> "⚠ 매장 밖에서 출근" + (clockInDistance == null ? "" : " · " + formatDistance(clockInDistance));
+            case UNKNOWN -> "⚠ 위치 미확인";
+        };
+    }
+
+    private static String formatDistance(int meters) {
+        return meters >= 1000 ? String.format("%.1fkm", meters / 1000.0) : meters + "m";
     }
 
     /** 사장님이 확인해봐야 하는 출근인지 (매장 밖 또는 확인 불가) */
